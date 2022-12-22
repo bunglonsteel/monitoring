@@ -38,6 +38,7 @@
                     <div class="col-md-4">
                         <form id="update-image" method="post" enctype="multipart/form-data">
                             <input id="image-upload" type="file" name="image_profile" class="dropify" />
+                            <small>Catatan : Max upload 1 MB</small>
                             <input type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
                             <button type="submit" class="btn btn-primary fs-7 mt-2 btn-block my-3">Ganti foto</button>
                         </form>
