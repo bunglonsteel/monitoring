@@ -169,9 +169,9 @@ class Settings extends CI_Controller {
         }
     }
 
-    private function _uploaded($field = [], $do_upload, $old_image='',  $default=''){
+    private function _uploaded($field = [], $do_upload='', $old_image='',  $default=''){
 
-        if ($do_upload) {
+        if ($do_upload != '') {
             if ($old_image != $default) {
                 unlink(FCPATH . 'public/image/default/' . $old_image);
             }
