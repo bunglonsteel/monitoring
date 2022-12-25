@@ -156,7 +156,7 @@
                         </a>
                     </li>
 
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
                             data-bs-target="#catatan">
                             <span class="nav-icon-wrap">
@@ -169,20 +169,15 @@
                         <ul id="catatan" class="nav flex-column collapse  nav-children">
                             <li class="nav-item">
                                 <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'list-catatan') : ?> active <?php endif;?>">
-                                        <a class="nav-link" href="<?= base_url('list-notes') ?>">
-                                            <span class="nav-link-text">List Catatan</span>
+                                    <li class="nav-item <?php if($this->uri->segment(1) == 'notes') : ?> active <?php endif;?>">
+                                        <a class="nav-link" href="<?= base_url('notes') ?>">
+                                            <span class="nav-link-text">Standar pekerjaan</span>
                                         </a>
                                     </li>
                                     <?php if($this->session->userdata('role_id') == 2) : ?>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'notes') : ?> active <?php endif;?>">
-                                            <a class="nav-link" href="<?= base_url('notes') ?>">
-                                                <span class="nav-link-text">Catatan</span>
-                                            </a>
-                                        </li>
                                         <li class="nav-item <?php if($this->uri->segment(1) == 'notes-client') : ?> active <?php endif;?>">
                                             <a class="nav-link" href="<?= base_url('client') ?>">
-                                                <span class="nav-link-text">Client</span>
+                                                <span class="nav-link-text">Catatan Client</span>
                                             </a>
                                         </li>
                                         <li class="nav-item <?php if($this->uri->segment(1) == 'notes-standard') : ?> active <?php endif;?>">
@@ -200,7 +195,7 @@
                                 </ul>
                             </li>
                         </ul>
-                    </li> -->
+                    </li>
                     
                 </ul>
             </div>

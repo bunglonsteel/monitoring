@@ -9,12 +9,16 @@ class Notes_model extends CI_Model {
         return $this->db->get($table)->result_array();
     }
 
-    public function get_notes(){
-        return $this->db->select('n.*, nc.*, nct.*')
+    public function get_notes($user = false){
+        $this->db->select('n.*, nc.*, nct.*')
                     ->from('notes as n')
                     ->join('notes_client as nc', 'n.notes_client_id = nc.notes_client_id')
-                    ->join('notes_category as nct', 'n.notes_category_id = nct.notes_category_id')
-                    ->order_by('notes_id','desc')
+                    ->join('notes_category as nct', 'n.notes_category_id = nct.notes_category_id');
+        if ($user) {
+            $this->db->where('n.notes_status', 'PUB');
+        }
+
+        return $this->db->order_by('notes_id','desc')
                     ->get()
                     ->result_array();
     }

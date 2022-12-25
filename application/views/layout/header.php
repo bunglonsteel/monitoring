@@ -22,13 +22,26 @@
     <link href="<?=base_url() ?>public/assets/vendors/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 	<!-- CSS -->
     <link href="<?=base_url() ?>public/assets/dist/css/style.css" rel="stylesheet" type="text/css">
-    <link href="<?=base_url() ?>public/assets/dist/css/villainti.css" rel="stylesheet" type="text/css">
     <link href="<?=base_url() ?>public/assets/dist/css/swalbootstrap-4.min.css" rel="stylesheet" type="text/css">
     <!-- Sweetalert JS -->
     <script async src="<?= base_url()?>public/assets/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
     <script src="<?=base_url() ?>public/assets/vendors/jquery/dist/jquery.min.js"></script>
 
     <style>
+        .hk-wrapper[data-layout="vertical"]
+        .hk-menu
+        .menu-content-wrap
+        .menu-group
+        .navbar-nav
+        .nav-item
+        .nav-link
+        .nav-icon-wrap
+        > *:not(.badge) {
+            font-size: 1.2rem !important;
+        }
+        .alert.alert-dismissible .btn-close:before {
+            top: 0 !important;
+        }
         .clock-head {
             border: 1px solid #eaeaea;
             padding: 5px 8px 0 8px;
@@ -110,6 +123,12 @@
             overflow: hidden!important;
             display: -webkit-box!important;
             -webkit-line-clamp: 1!important;
+            -webkit-box-orient: vertical;
+        }
+        .text-limit-2 {
+            overflow: hidden!important;
+            display: -webkit-box!important;
+            -webkit-line-clamp: 2!important;
             -webkit-box-orient: vertical;
         }
 

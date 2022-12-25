@@ -9,6 +9,7 @@
                     <div class="card card-border mb-0 h-100">
                         <div class="card-header card-header-action">
                             <h6 id="tambah">Semua Catatan</h6>
+                            <?php if($this->session->userdata('role_id') == 2) : ?>
                             <div class="card-action-wrap">
                                 <a href="<?= base_url('notes/add_notes') ?>" class="btn btn-sm btn-primary me-2">
                                     <span>
@@ -21,6 +22,7 @@
                                     </span>
                                 </a>
                             </div>
+                            <?php endif;?>
                         </div>
                         <div class="card-body p-3 pt-4">
                             <?= $this->session->flashdata('message'); ?>
@@ -32,8 +34,11 @@
                                             <th>Catatan Client</th>
                                             <th>Catatan judul</th>
                                             <th>Catatan Kategori</th>
-                                            <th>Catatan Status</th>
+                                            <th>Status</th>
+                                            <th>Detail</th>
+                                            <?php if($this->session->userdata('role_id') == 2) : ?>
                                             <th class="text-center">Action</th>
+                                            <?php endif; ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -54,8 +59,21 @@
                                                         <span class="badge badge-soft-danger">Dinonaktifkan</span>
                                                     <?php endif;?>
                                                 </td>
+                                                <td>
+                                                    <a href="<?= base_url('notes/detail/') ?><?= $note['notes_id'] ?>" class="btn btn-sm btn-soft-dark flush-soft-hover">
+                                                        <span class="fs-8">
+                                                            <span class="icon me-1">
+                                                                <span class="feather-icon">
+                                                                    <i data-feather="eye"></i>
+                                                                </span>
+                                                            </span>
+                                                            <span>Lihat</span>
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <?php if($this->session->userdata('role_id') == 2) : ?>
                                                 <td class="text-center">
-                                                    <a href="<?= base_url('notes/edit_notes') ?>" class="btn me-2 btn-icon btn-sm btn-soft-dark flush-soft-hover">
+                                                    <a href="<?= base_url('notes/edit_notes/') ?><?= $note['notes_id'] ?>" class="btn me-2 btn-icon btn-sm btn-soft-dark flush-soft-hover">
                                                         <span class="icon">
                                                             <span class="feather-icon">
                                                                 <i data-feather="edit"></i>
@@ -70,6 +88,7 @@
                                                         </span>
                                                     </button>
                                                 </td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
@@ -84,65 +103,10 @@
     </div>
 </div>
 
-<!-- <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title">Tambah Catatan</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="tambah-notes" class="form-floating" action="<?= base_url('notes/add_notes')?>" method="POST">
-                <div class="modal-body">
-                    <div id="errors" style="display: none;"></div>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <label class="fs-8 mb-2">Lokasi
-                                <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                            </label>
-                            <select class="form-select" name="notes_loc">
-                                <option hidden value="0">Choose...</option>
-                                <option value="USA">USA</option>
-                                <option value="AUS">AUS</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="fs-8 mb-2">Tipe Catatan
-                                <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                            </label>
-                            <select class="form-select" name="notes_type">
-                                <option hidden value="0">Choose...</option>
-                                <option value="GR">General</option>
-                                <option value="JR">Junior st.</option>
-                                <option value="SR">Superior st.</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating mt-2">
-                                <input type="text" class="form-control" name="notes_title"></input>
-                                <label>Ketikan Catatan
-                                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <div class="modal-footer p-2" style="border-top: none ;">
-                        <input class="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
-                        <button type="button" class="btn btn-soft-dark fs-7" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary fs-7">Tambah</button>
-                    </div>
-            </form>
-        </div>
-    </div>
-</div> -->
-
 <!-- Data Table JS -->
 <script src="<?= base_url()?>public/assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url()?>public/assets/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 <script src="<?= base_url()?>public/assets/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-<script src="<?= base_url()?>public/assets/vendors/select2/dist/js/select2.full.min.js"></script>
 
 <script>
     $(document).ready(function () {

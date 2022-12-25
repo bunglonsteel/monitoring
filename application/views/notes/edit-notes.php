@@ -5,7 +5,7 @@
             <div class="blogapp-content" style="padding-left: 0;">
                 <div class="blogapp-detail-wrap">
                     <header class="blog-header">
-                        <h5 class="mb-0">Tambah Catatan</h5>
+                        <h5 class="mb-0">Tambah Bagian Catatan</h5>
                         <div class="blog-options-wrap">
                             <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover hk-navbar-togglable d-sm-inline-block d-none" 
                             href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Collapse">
@@ -25,7 +25,7 @@
                     <div class="blog-body mt-3">
                         <div data-simplebar class="nicescroll-bar">
                             <div class="container-fluid">
-                                <form action="<?= base_url('notes/add_notes') ?>" method="POST" class="p-md-2 pt-3 card card-border">
+                                <form action="<?= base_url('notes/edit_notes/') ?><?= $notes_edit['notes_id'] ?>" method="POST" class="p-md-2 pt-3 card card-border">
                                     <div class="card-body">
                                         <div class="row g-2">
                                             <div class="col-md-6 col-lg-3">
@@ -34,7 +34,7 @@
                                                         <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
                                                     </label>
                                                     <div class="input-group">
-                                                        <input type="text" name="notes_title" class="form-control" value="<?= set_value('notes_title'); ?>" placeholder="Ketikan judul">
+                                                        <input type="text" name="notes_title" class="form-control" value="<?= $notes_edit['notes_title'] ?>" placeholder="Ketikan judul">
                                                     </div>
                                                     <?= form_error('notes_title', '<small class="invalid-feedback d-block fs-8">', '</small>'); ?>
                                                 </div>
@@ -47,7 +47,9 @@
                                                     <select id="notes-client" class="form-select" name="notes_client">
                                                         <option value="0" hidden>Choose..</option>
                                                         <?php foreach ($notes_client as $client) :?>
-                                                                <option value="<?= $client['notes_client_id'] ?>"><?= $client['notes_client'] ?></option>
+                                                                <option value="<?= $client['notes_client_id'] ?>">
+                                                                    <?= $client['notes_client'] ?>
+                                                                </option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                     <?= form_error('notes_client', '<small class="invalid-feedback d-block fs-8">', '</small>'); ?>
@@ -61,7 +63,9 @@
                                                     <select id="notes-category" class="form-select" name="notes_category">
                                                         <option value="0" hidden>Choose..</option>
                                                         <?php foreach ($notes_category as $category) :?>
-                                                            <option value="<?= $category['notes_category_id'] ?>"><?= $category['notes_category_name'] ?></option>
+                                                            <option value="<?= $category['notes_category_id'] ?>">
+                                                                <?= $category['notes_category_name'] ?>
+                                                            </option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                     <?= form_error('notes_category', '<small class="invalid-feedback d-block fs-8">', '</small>'); ?>
@@ -77,6 +81,7 @@
                                                         <option value="0" hidden>Choose..</option>
                                                         <option value="1">Simpan Draft</option>
                                                         <option value="2">Terbitkan</option>
+                                                        <option value="3">Nonaktifkan</option>
                                                     </select>
                                                     <?= form_error('notes_status', '<small class="invalid-feedback d-block fs-8">', '</small>'); ?>
                                                 </div>
@@ -89,7 +94,7 @@
 
                                                         <small>Max-upload Image 1Mb</small>
                                                     </label>
-                                                    <textarea id="summernote" name="notes_content" ><?= set_value('notes_content'); ?></textarea>
+                                                    <textarea id="summernote" name="notes_content" ><?= $notes_edit['notes_content'] ?></textarea>
                                                 </div>
                                                 <input id="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
                                                 <div class="d-flex justify-content-between">
@@ -111,7 +116,7 @@
                                                                         <i data-feather="save"></i>
                                                                     </span>
                                                                 </span>
-                                                                <span class="btn-text">Simpan</span>
+                                                                <span class="btn-text">Update</span>
                                                             </span>
                                                         </button>
                                                     </div>
@@ -131,13 +136,12 @@
 </div>
 
 <script src="<?= base_url()?>public/assets/vendors/summernote/summernote-lite.js"></script>
-<script src="<?= base_url()?>public/assets/vendors/select2/dist/js/select2.full.min.js"></script>
 
 <script>
     $(document).ready(function () {
-        const notesClient = '<?= set_value('notes_client'); ?>';
-        const notesCat = '<?= set_value('notes_category'); ?>';
-        const notesStat = '<?= set_value('notes_status'); ?>';
+        const notesClient = '<?= $notes_edit['notes_client_id'] ?>';
+        const notesCat = '<?= $notes_edit['notes_category_id'] ?>';
+        const notesStat = '<?= $notes_edit['notes_status'] ?>';
 
         if(notesClient != ''){
             $('#notes-client').val(notesClient).change()
@@ -145,9 +149,15 @@
         if(notesCat != ''){
             $('#notes-category').val(notesCat).change()
         }
-        if(notesStat != ''){
-            $('#notes-status').val(notesStat).change()
+
+        if(notesStat == 'DRF'){
+            $('#notes-status').val(1).change()
+        } else if(notesStat == 'PUB'){
+            $('#notes-status').val(2).change()
+        } else {
+            $('#notes-status').val(3).change()
         }
+
     });
 
     $('#summernote').summernote({

@@ -14,29 +14,33 @@ class Notes extends CI_Controller {
     }
 
     public function index() {
-        check_user_acces();
         $data['count_pending'] = $this->Cuti_model->get_count_cuti_pending();
         $data['settings'] = $this->Settings_model->get_settings();
         $data['employee'] = $this->Employee_model->get_employee_by_id($this->session->userdata('employee_id'));
 
-        $data['notes']  = $this->Notes_model->get_notes();
+        if ($this->session->userdata('role_id') == 2) {
+            $data['notes']  = $this->Notes_model->get_notes();
+        } else {
+            $data['notes']  = $this->Notes_model->get_notes(true);
+        }
+        
         // print_r($data['notes']);die;
 
         $data['title'] = 'Catatan';
         $data['slug'] = 'Catatan';
-        $data['judul'] = 'Catatan';
+        $data['judul'] = 'Standar Pekerjaan';
         render_template('notes/notes', $data);
     }
 
-    public function list_notes() {
+    public function detail($notes_id) {
         $data['count_pending'] = $this->Cuti_model->get_count_cuti_pending();
         $data['settings'] = $this->Settings_model->get_settings();
         $data['employee'] = $this->Employee_model->get_employee_by_id($this->session->userdata('employee_id'));
 
+        $data['notes_content']  = $this->Notes_model->check_notes($notes_id);
+
         $data['title'] = 'Catatan';
-        $data['slug'] = 'Catatan';
-        $data['judul'] = 'Standar Pekerjaan';
-        render_template('notes/list-notes', $data);
+        render_template('notes/notes-detail', $data);
     }
 
     public function notes_standard() {
@@ -331,6 +335,60 @@ class Notes extends CI_Controller {
                 }
             }
             echo json_encode($message);
+        }
+    }
+
+    public function edit_notes($notes_id = ''){
+        check_user_acces();
+        $data['count_pending'] = $this->Cuti_model->get_count_cuti_pending();
+        $data['settings'] = $this->Settings_model->get_settings();
+        $data['employee'] = $this->Employee_model->get_employee_by_id($this->session->userdata('employee_id'));
+        $data['notes_client'] = $this->Notes_model->get('notes_client');
+        $data['notes_category'] = $this->Notes_model->get('notes_category');
+        $data['notes_edit'] = $this->Notes_model->check_notes($notes_id);
+        $data['title'] = 'Tambah Catatan';
+
+        $this->form_validation->set_rules('notes_title', 'Judul', 'trim|required');
+		$this->form_validation->set_rules('notes_client', 'Notes Client', 'trim|callback_select_check');
+		$this->form_validation->set_rules('notes_category', 'Kategori', 'trim|callback_select_check');
+		$this->form_validation->set_rules('notes_status', 'Status', 'trim|callback_select_check');
+		$this->form_validation->set_rules('notes_content', 'Konten', 'trim');
+		
+		if ($this->form_validation->run() == false) {
+            render_template('notes/edit-notes', $data);
+		} else {
+            $notes_title    = trim(htmlspecialchars($this->input->post('notes_title', TRUE)));
+            $notes_client_id   = htmlspecialchars($this->input->post('notes_client', TRUE));
+            $notes_category_id = htmlspecialchars($this->input->post('notes_category', TRUE));
+            $notes_status   = htmlspecialchars($this->input->post('notes_status', TRUE));
+            $notes_content  = $this->input->post('notes_content', TRUE);
+
+            $content = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $notes_content);
+            $dom = new DOMDocument();
+            $dom->loadHTML($content);
+            $script = $dom->getElementsByTagName('h2');
+            foreach($script as $key => $item){
+                $add_id = 'heading-'. $key;
+                $item->setAttribute('id', $add_id);
+            }
+            $html = preg_replace('/^<!DOCTYPE.+?>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $dom->saveHTML()));;
+            
+            $data = [
+                'notes_client_id' => $notes_client_id,
+                'notes_category_id' => $notes_category_id,
+                'notes_title' => $notes_title,
+                'notes_date' => date('Y-m-d'),
+                'notes_content' => $html,
+                'notes_status' => $notes_status
+            ];
+
+            $this->Notes_model->update('notes', ['notes_id' => $notes_id], $data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success alert-wth-icon alert-dismissible mb-4 show fade fs-7" role="alert">
+                                            <span class="alert-icon-wrap fs-5"><i class="zmdi zmdi-check" style="margin-top: 2px;"></i></span> Catatan berhasil diupdate.
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                        ');
+            redirect('notes');
         }
     }
     // End Edit
