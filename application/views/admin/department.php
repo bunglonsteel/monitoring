@@ -41,7 +41,14 @@
                                             <td><?= $no++ ?>.</td>
                                             <td><?= $bagian['name_department'] ?></td>
                                             <td class="text-center">
-                                            <button class="btn me-3 btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" type="button" data-id="<?= $bagian['department_id'] ?>">
+                                            <button class="btn me-2 btn-icon btn-sm btn-soft-dark flush-soft-hover btn-edit" type="button" data-id="<?= $bagian['department_id'] ?>" data-name="<?= $bagian['name_department'] ?>" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                                <span class="icon">
+                                                    <span class="feather-icon">
+                                                        <i data-feather="edit"></i>
+                                                    </span>
+                                                </span>
+                                            </button>
+                                            <button class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" type="button" data-id="<?= $bagian['department_id'] ?>">
                                                 <span class="icon">
                                                     <span class="feather-icon">
                                                         <i data-feather="trash"></i>
@@ -89,6 +96,31 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Edit department</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="error-edit" style="display: none;"></div>
+                <form id="edit-department" class="form-floating">
+                        <input type="text" class="form-control" id="name-department" name="name_department">
+                        <label >Nama bagian <i class="badge badge-danger badge-indicator badge-indicator-processing mb-2"></i></label>
+                    </div>
+                    <div class="modal-footer p-2" style="border-top: none ;">
+                        <input class="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
+                        <button type="button" class="btn btn-soft-dark fs-7" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary fs-7">Edit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- Data Table JS -->
 <script src="<?= base_url()?>public/assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url()?>public/assets/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
@@ -126,6 +158,37 @@
                 success: function(response){
                     if (response.error) {
                         $('#error-notif').html(response.desc).show()
+                    }
+                    if (response.success) {
+                        sweatalert_confirm('success', response)
+                    }
+                },
+                error : function(xhr, status, errorThrown){
+                    console.log(xhr.responseText)
+                    console.log(status)
+                    console.log(errorThrown)
+                }
+            });
+            return false;
+        })
+
+        $('#edit-department').submit(function (e) { 
+            e.preventDefault()
+            const url = $(this).attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url, 
+                data: $(this).serialize(),
+                dataType: "json",  
+                cache: false,
+                success: function(response){
+                    if (response.errors) {
+                        $('#error-edit').html(response.desc).show()
+                        $('.csrf').val(response.csrfHash)
+                    }
+                    if (response.error) {
+                        sweatalert_confirm('danger', response)
                     }
                     if (response.success) {
                         sweatalert_confirm('success', response)
@@ -193,6 +256,15 @@
                     });
                 }
             })
+            return false;
+        })
+
+        $(document).on('click','.btn-edit', function(e){
+            e.preventDefault()
+            const id = $(this).data('id')
+            const name = $(this).data('name')
+            $('#edit-department').attr('action', `<?= base_url('department/edit_department/') ?>${id}`)
+            $('#name-department').val(name)
             return false;
         })
 

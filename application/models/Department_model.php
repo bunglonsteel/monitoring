@@ -21,6 +21,12 @@ class Department_model extends CI_Model {
         $this->db->insert('department', $data);
     }
 
+    public function update_department($department_id, $data){
+        $this->db->set($data)
+                ->where('department_id', $department_id)
+                ->update('department');
+    }
+
     public function remove_department($department_id){
         $this->db->delete('department', ['department_id' => $department_id]);
     }

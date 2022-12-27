@@ -8,8 +8,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Login</title>
 	<!-- Favicon -->
-	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="<?= base_url() ?>public/image/default/<?= $settings['logo'] ?>">
+	<link rel="icon" href="<?= base_url() ?>public/image/default/<?= $settings['logo'] ?>" type="image/x-icon">
 	<link href="<?= base_url()?>public/assets/dist/css/style.css" rel="stylesheet" type="text/css">
 	<link href="<?= base_url()?>public/assets/dist/css/villainti.css" rel="stylesheet" type="text/css">
 	<style>

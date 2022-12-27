@@ -245,8 +245,6 @@
 <script src="<?= base_url()?>public/assets/vendors/datatables.net-select/js/dataTables.select.min.js"></script>
 <!-- Sweetalert JS -->
 <script src="<?= base_url()?>public/assets/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
-<!-- Select2 JS -->
-<script src="<?= base_url()?>public/assets/vendors/select2/dist/js/select2.full.min.js"></script>
 
 <script>
     $(document).ready(function () {

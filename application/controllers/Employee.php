@@ -150,7 +150,7 @@ class Employee extends CI_Controller {
                 if ($user_employee['user_id'] == $user_id) {
                     $message = [
                         'success' => 'true',
-                        'title' => 'Gagal!',
+                        'title' => 'Berhasil!',
                         'desc' => 'Password berhasil di ubah.',
                         'buttontext' => 'Oke, tutup'
                     ];
