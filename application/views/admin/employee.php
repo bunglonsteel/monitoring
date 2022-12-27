@@ -248,7 +248,6 @@
 
 <script>
     $(document).ready(function () {
-        $(".select2").select2();
 
         $('#table-karyawan').DataTable({
             // pageLength: 1,
