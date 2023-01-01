@@ -75,10 +75,8 @@
                                                 <?php if($absen['presence'] == 1 ): ?>
                                                     <span class="badge badge-soft-success">
                                                         <span>
-                                                            <span class="icon">
-                                                                <span class="feather-icon">
-                                                                    <i data-feather="zap"></i>
-                                                                </span>
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-graph-line"></i>
                                                             </span>
                                                             Masuk
                                                         </span>
@@ -86,10 +84,8 @@
                                                 <?php elseif($absen['presence'] == 2): ?>
                                                     <span class="badge badge-soft-info">
                                                         <span>
-                                                            <span class="icon">
-                                                                <span class="feather-icon">
-                                                                    <i data-feather="send"></i>
-                                                                </span>
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-direction"></i>
                                                             </span>
                                                             Izin
                                                         </span>
@@ -97,10 +93,8 @@
                                                 <?php else :?>
                                                     <span class="badge badge-soft-danger">
                                                         <span>
-                                                            <span class="icon">
-                                                                <span class="feather-icon">
-                                                                    <i data-feather="activity"></i>
-                                                                </span>
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-pulse"></i>
                                                             </span>
                                                             Sakit
                                                         </span>

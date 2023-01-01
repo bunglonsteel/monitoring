@@ -105,10 +105,8 @@
                                             <td class="text-center">
                                                 <button data-employee="<?= $emp['employee_id'] ?>" class="btn btn-sm btn-soft-dark flush-soft-hover mx-auto drawer-toggle-link show-profile" data-target="#drawer_push"  data-drawer="push-normal" type="button">
                                                     <span class="fs-8">
-                                                        <span class="icon me-1">
-                                                            <span class="feather-icon">
-                                                                <i data-feather="eye"></i>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-preview"></i>
                                                         </span>
                                                         <span>Lihat</span>
                                                     </span>

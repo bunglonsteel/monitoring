@@ -62,10 +62,8 @@
                                                 <td>
                                                     <a href="<?= base_url('notes/detail/') ?><?= $note['notes_id'] ?>" class="btn btn-sm btn-soft-dark flush-soft-hover">
                                                         <span class="fs-8">
-                                                            <span class="icon me-1">
-                                                                <span class="feather-icon">
-                                                                    <i data-feather="eye"></i>
-                                                                </span>
+                                                            <span class="icon">
+                                                                <i class="icon dripicons-preview"></i>
                                                             </span>
                                                             <span>Lihat</span>
                                                         </span>
@@ -74,17 +72,13 @@
                                                 <?php if($this->session->userdata('role_id') == 2) : ?>
                                                 <td class="text-center">
                                                     <a href="<?= base_url('notes/edit_notes/') ?><?= $note['notes_id'] ?>" class="btn me-2 btn-icon btn-sm btn-soft-dark flush-soft-hover">
-                                                        <span class="icon">
-                                                            <span class="feather-icon">
-                                                                <i data-feather="edit"></i>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-pencil"></i>
                                                         </span>
                                                     </a>
                                                     <button class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" type="button" data-id="<?= $note['notes_id'] ?>">
-                                                        <span class="icon">
-                                                            <span class="feather-icon">
-                                                                <i data-feather="trash"></i>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-trash"></i>
                                                         </span>
                                                     </button>
                                                 </td>

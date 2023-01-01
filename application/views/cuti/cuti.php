@@ -103,10 +103,8 @@
                                                 <td class="text-center">
                                                     <button class="btn btn-sm btn-soft-dark show-reason" data-reason="<?= $cuti['cuti_reason'] ?>" data-bs-toggle="modal" data-bs-target="#modal-show" type="button">
                                                         <span class="fs-8">
-                                                            <span class="icon me-1">
-                                                                <span class="feather-icon">
-                                                                    <i data-feather="eye"></i>
-                                                                </span>
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-preview"></i>
                                                             </span>
                                                             <span>Lihat</span>
                                                         </span>
@@ -118,32 +116,20 @@
                                                 if($this->session->userdata('role_id') == 2 ) :?>
                                                 <td>
                                                     <button <?= $disable ?> class="btn btn-icon btn-sm btn-primary btn-status" data-cutiid="<?= $cuti['cuti_id'] ?>" data-status='2' type="button">
-                                                        <span>
-                                                            <span class="icon">
-                                                                <span class="feather-icon" style="margin-top: 1px;">
-                                                                    <i data-feather="check"></i>
-                                                                </span>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-checkmark"></i>
                                                         </span>
                                                     </button>
                                                     <?php if($cuti['cuti_type'] == 'CT') :?>
                                                         <button class="btn btn-icon btn-sm btn-soft-dark edit-cuti" data-cutiid="<?= $cuti['cuti_id'] ?>" data-start="<?= $cuti['start_date'] ?>" data-end="<?= $cuti['end_date'] ?>" data-reason="<?= $cuti['cuti_reason'] ?>" data-bs-toggle="modal" data-bs-target="#modal-edit" type="button">
-                                                            <span>
-                                                                <span class="icon">
-                                                                    <span class="feather-icon" style="margin-top: 1px;">
-                                                                        <i data-feather="edit"></i>
-                                                                    </span>
-                                                                </span>
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-pencil"></i>
                                                             </span>
                                                         </button>
                                                     <?php endif; ?>
                                                     <button <?= $disable ?> class="btn btn-icon btn-sm btn-soft-danger btn-status" data-cutiid="<?= $cuti['cuti_id'] ?>" data-status="3" type="button">
-                                                        <span>
-                                                            <span class="icon">
-                                                                <span class="feather-icon" style="margin-top: 1px;">
-                                                                    <i data-feather="x"></i>
-                                                                </span>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-cross"></i>
                                                         </span>
                                                     </button>
                                                 </td>

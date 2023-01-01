@@ -40,10 +40,8 @@
                                             
                                             <td class="text-center">
                                                 <button class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" type="button" data-id="<?= $standard['notes_standard_id'] ?>">
-                                                    <span class="icon">
-                                                        <span class="feather-icon">
-                                                            <i data-feather="trash"></i>
-                                                        </span>
+                                                    <span class="icon fs-8">
+                                                        <i class="icon dripicons-trash"></i>
                                                     </span>
                                                 </button>
                                             </td>

@@ -47,17 +47,13 @@
                                         </td>
                                         <td class="text-center">
                                             <button type="button" class="btn me-2 btn-icon btn-sm btn-soft-dark flush-soft-hover btn-edit" data-id="<?= $client['notes_client_id'] ?>" data-client="<?= $client['notes_client'] ?>" data-standar="<?= $client['notes_standard_id'] ?>">
-                                                <span class="icon">
-                                                    <span class="feather-icon">
-                                                        <i data-feather="edit"></i>
-                                                    </span>
+                                                <span class="icon fs-8">
+                                                    <i class="icon dripicons-pencil"></i>
                                                 </span>
                                             </button>
                                             <button type="button" class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" data-id="<?= $client['notes_client_id'] ?>">
-                                                <span class="icon">
-                                                    <span class="feather-icon">
-                                                        <i data-feather="trash"></i>
-                                                    </span>
+                                                <span class="icon fs-8">
+                                                    <i class="icon dripicons-trash"></i>
                                                 </span>
                                             </button>
                                         </td>

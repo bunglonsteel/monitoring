@@ -38,13 +38,11 @@
                                             <td><?= $no++ ?>.</td>
                                             <td><?= $category['notes_category_name'] ?></td>
                                             <td class="text-center">
-                                                <a class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" data-id="<?= $category['notes_category_id'] ?>">
-                                                    <span class="icon">
-                                                        <span class="feather-icon">
-                                                            <i data-feather="trash"></i>
-                                                        </span>
+                                                <button type="button" class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" data-id="<?= $category['notes_category_id'] ?>">
+                                                    <span class="icon fs-8">
+                                                        <i class="icon dripicons-trash"></i>
                                                     </span>
-                                                </a>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

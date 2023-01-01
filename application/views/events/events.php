@@ -66,10 +66,8 @@
                                             <td>
                                                 <button class="btn btn-sm btn-soft-dark show-description" data-desc="<?= $event['event_description'] ?>" data-bs-toggle="modal" data-bs-target="#modal-show" type="button">
                                                     <span class="fs-8">
-                                                        <span class="icon me-1">
-                                                            <span class="feather-icon" style="margin-top: 1px;">
-                                                                <i data-feather="eye"></i>
-                                                            </span>
+                                                        <span class="icon fs-8">
+                                                            <i class="icon dripicons-preview"></i>
                                                         </span>
                                                         <span>Lihat</span>
                                                     </span>
@@ -78,19 +76,13 @@
                                             <?php if($this->session->userdata('role_id') == 2) : ?>
                                             <td class="text-center">
                                                 <button class="btn btn-icon btn-sm btn-soft-dark edit-event" data-eventid="<?= $event['event_id'] ?>" data-eventtitle="<?= $event['event_title'] ?>" data-location="<?= $event['event_location'] ?>" data-start="<?= $event['start_date'] ?>" data-end="<?= $event['end_date'] ?>" data-desc="<?= $event['event_description'] ?>" data-bs-toggle="modal" data-bs-target="#modal-edit" type="button">
-                                                    <span>
-                                                        <span class="icon">
-                                                            <span class="feather-icon" style="margin-top: 1px;">
-                                                                <i data-feather="edit"></i>
-                                                            </span>
-                                                        </span>
+                                                    <span class="icon fs-8">
+                                                        <i class="icon dripicons-pencil"></i>
                                                     </span>
                                                 </button>
                                                 <button class="btn me-3 btn-icon btn-sm btn-soft-danger flush-soft-hover btn-delete" type="button" data-id="<?= $event['event_id'] ?>">
-                                                    <span class="icon">
-                                                        <span class="feather-icon">
-                                                            <i data-feather="trash"></i>
-                                                        </span>
+                                                    <span class="icon fs-8">
+                                                        <i class="icon dripicons-trash"></i>
                                                     </span>
                                                 </button>
                                             </td>
