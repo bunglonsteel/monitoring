@@ -268,14 +268,6 @@ class Cleanliness extends CI_Controller {
             } else {
                 $result = $this->Cleanliness_model->get_laporan_by_month($bulan);
                 $semua_kebersihan = $this->db->count_all('cleanliness');
-
-                $total_selesai = $result['selesai'];
-                $total_kebersihan = $semua_kebersihan * $result['total_date'];
-                $total_kurang = $total_kebersihan - $total_selesai;
-
-                $count_penilaian = ($total_selesai / $total_kebersihan) * 100;
-                $penilaian = ($count_penilaian >= 90) ? 3 : (($count_penilaian < 90 && $count_penilaian >= 50) ? 2 : 1);
-                // print_r($count_penilaian);die;
                 if ($result == null) {
                     $message = [
                         'error' => 'true',
@@ -284,6 +276,12 @@ class Cleanliness extends CI_Controller {
                         'buttontext' => 'Oke, tutup'
                     ];
                 } else {
+                    $total_selesai = $result['selesai'];
+                    $total_kebersihan = $semua_kebersihan * $result['total_date'];
+                    $total_kurang = $total_kebersihan - $total_selesai;
+    
+                    $count_penilaian = ($total_selesai / $total_kebersihan) * 100;
+                    $penilaian = ($count_penilaian >= 90) ? 3 : (($count_penilaian < 90 && $count_penilaian >= 50) ? 2 : 1);
 
                     $message = [
                         'success' => 'true',
