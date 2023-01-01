@@ -5,20 +5,14 @@
         <?php $this->load->view('layout/breadcrumbs') ?>
 
         <div class="hk-page-body">
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="card card-border h-100">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="card card-border h-100 mb-md-0">
                         <div class="card-header">
                             <h6 class="fs-7">Filter laporan</h6>
-                            <div class="d-flex">
-                                <div class="form-check form-switch mb-0">
-                                    <input type="checkbox" class="form-check-input" id="check-tahun">
-                                    <label class=" fs-8" for="check">Per /thn</label>
-                                </div>
-                            </div>
                         </div>
                         <div class="card-body">
-                            <form id="filter-absensi" action="<?= base_url('absensi/get_laporan') ?>">
+                            <form id="filter-kebersihan" action="<?= base_url('cleanliness/get_laporan') ?>">
                                 <div id="filter-bulan">
                                     <label for="jenis" class="fs-8 mb-1">Pilih Bulan
                                         <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
@@ -39,22 +33,6 @@
                                         <option value="12-<?= date('Y') ?>"<?php if(12 > date('n')) : ?> disabled <?php endif; ?>>Desember <?= date('Y') ?></option>
                                     </select>
                                 </div>
-                                <div id="filter-tahun" style="display: none;">
-                                    <label for="jenis" class="fs-8 mb-1">Filter tahun
-                                        <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                                    </label>
-                                    <input id="select-year" class="form-control text-center mb-2" type="text" value="<?= date('Y')?>" readonly>
-                                </div>
-
-                                <label for="jenis" class="fs-8 mb-1">Pilih Karyawan
-                                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                                </label>
-                                <select class="form-select mb-3" name="filter_name">
-                                    <option value="0" hidden>Choose...</option>
-                                    <?php foreach($all_employee as $employee) :?>
-                                        <option value="<?= $employee['employee_id']?>"><?= $employee['full_name']?></option>
-                                    <?php endforeach;?>
-                                </select>
                                 <input id="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
                                 <button class="btn btn-primary fs-7 btn-block" type="submit">
                                     <span>
@@ -77,15 +55,15 @@
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                        <small>Total hadir</small>
+                                        <small>Total Selesai</small>
                                             <h6 class="text-xs text-primary mb-0">
-                                                Hadir
+                                                Pekerjaan Selesai
                                             </h6>
-                                            <div id="hadir" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                            <div id="selesai" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
                                         </div>
                                         <div class="col-auto">
                                             <span class="feather-icon">
-                                                <i data-feather="zap" style="color: #eaeaea; font-size:45px;"></i>
+                                                <i data-feather="check-circle" style="color: #eaeaea; font-size:45px;"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -97,95 +75,35 @@
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                        <small>Total izin</small>
+                                        <small>Total Kekurangan</small>
                                             <h6 class="text-xs text-primary mb-0">
-                                                Izin
+                                                Tidak terpenuhi
                                             </h6>
-                                            <div id="izin" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="feather-icon">
-                                                <i data-feather="send" style="color: #eaeaea; font-size:45px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
-                                <div class="card-body pt-3 pb-0">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <small>Total sakit</small>
-                                            <h6 class="text-xs text-primary mb-0">
-                                                Sakit
-                                            </h6>
-                                            <div id="sakit" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="feather-icon">
-                                                <i data-feather="activity" style="color: #eaeaea; font-size:45px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
-                                <div class="card-body pt-3 pb-0">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <small>Jumlah hari dalam bulan</small>
-                                            <h6 class="text-xs text-primary mb-0">
-                                                Hari
-                                            </h6>
-                                            <div id="hari" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="feather-icon">
-                                                <i data-feather="calendar" style="color: #eaeaea; font-size:45px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
-                                <div class="card-body pt-3 pb-0">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <small>Jumlah Sabtu & Minggu</small>
-                                            <h6 class="text-xs text-primary mb-0">
-                                                Sabtu & Minggu
-                                            </h6>
-                                            <div id="satsun" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="feather-icon">
-                                                <i data-feather="calendar" style="color: #eaeaea; font-size:45px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
-                                <div class="card-body pt-3 pb-0">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <small>Total belum masuk</small>
-                                            <h6 class="text-xs text-primary mb-0">
-                                                Alpa / Belum
-                                            </h6>
-                                            <div id="alpa" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                            <div id="kekurangan" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
                                         </div>
                                         <div class="col-auto">
                                             <span class="feather-icon">
                                                 <i data-feather="x-circle" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <small>Penghargaan</small>
+                                            <h6 class="text-xs text-primary mb-3">
+                                                Status Penilaian
+                                            </h6>
+                                            <div id="rating" class="mb-2 fw-bold text-dark">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="star" style="color: #eaeaea; font-size:45px;"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -200,23 +118,8 @@
 </div>
 
 <script>
-    $('#check-tahun').change(function(e){
-        e.preventDefault()
-        if ($('#check-tahun').is(":checked")){
-            $('#filter-bulan').hide()
-            $('#select-month').removeAttr('name')
-            $('#filter-tahun').show()
-            $('#filter-absensi').attr('action','<?= base_url('absensi/get_laporan_year') ?>')
-        } else {
-            $('#filter-absensi').attr('action','<?= base_url('absensi/get_laporan') ?>')
-            $('#filter-bulan').show()
-            $('#select-month').attr('name','filter_month')
-            $('#filter-tahun').hide()
-        }
-    })
     $(document).ready(function () {
-
-        $(document).on('submit','#filter-absensi', function(e){
+        $(document).on('submit','#filter-kebersihan', function(e){
             e.preventDefault()
             const url = $(this).attr('action')
             // console.log($(this).serializeArray())
@@ -229,18 +132,17 @@
                 cache: false,
                 success: function(response){
                     if (response.success) {
-                        $('#hadir').text(response.desc.hadir)
-                        $('#izin').text(response.desc.izin)
-                        $('#sakit').text(response.desc.sakit)
-                        $('#hari').text(response.total_day)
-                        $('#alpa').text(response.total_alpa)
-                        $('#satsun').text(response.total_sat_sun)
-                        $('#csrf').val(response.csrfhash)
+                        $('#selesai').text(response.data.total_selesai)
+                        $('#kekurangan').text(response.data.total_kurang)
+
+                        const res_p = response.data.penilaian
+                        const penilaian = (res_p == 3) ? `<span class="badge badge-soft-success">Sangat Baik</span>` : ((res_p == 2) ? `<span class="badge badge-soft-primary">Baik</span>` : `<span class="badge badge-soft-danger">Kurang</span>`)
+                        $('#rating').html(penilaian)
+                        $('#csrf').val(response.csrfHash)
                     }
                     
                     if (response.error) {
                         sweatalert_confirm('danger', response)
-                        // $('#csrf').val(response.csrfhash)
                     }
 
                     if (response.errors) {

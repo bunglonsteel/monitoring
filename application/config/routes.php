@@ -21,3 +21,7 @@ $route['list-notes'] = 'notes/list_notes';
 $route['notes-standard'] = 'notes/notes_standard';
 $route['notes-category'] = 'notes/notes_category';
 $route['client'] = 'notes/notes_client';
+
+// Cleanliness
+$route['cleanliness-progress'] = 'cleanliness/cleanliness_progress';
+$route['laporan-kebersihan'] = 'cleanliness/laporan';
