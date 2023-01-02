@@ -9,7 +9,7 @@ class Cuti_model extends CI_Model {
         $this->db->select('cuti.*, e.employee_id , e.image_profile , e.full_name')
                 ->from('cuti')
                 ->join('employee as e', 'e.employee_id = cuti.employee_id')
-                ->order_by('submission_date', 'ASC');
+                ->order_by('submission_date', 'DESC');
 
         if ($employee_id != '') {
             $this->db->where('cuti.employee_id', $employee_id);

@@ -22,6 +22,7 @@ class Absensi extends CI_Controller {
         if ($this->session->userdata('role_id') == 2) {
             $this->load->model('Cuti_model');
             $data['count_pending'] = $this->Cuti_model->get_count_cuti_pending();
+            $data['list_employee'] = $this->Employee_model->get_employee_aktif(1);
         }
         $data['settings'] = $this->Settings_model->get_settings();
         $data['employee'] = $this->Employee_model->get_employee_by_id($this->session->userdata('employee_id'));
@@ -37,7 +38,7 @@ class Absensi extends CI_Controller {
         if (!$this->input->is_ajax_request()) {
             exit('No direct script access allowed');
         } else {
-            $check_absen = $this->Absensi_model->check_absensi_employee($employee_id);
+            $check_absen = $this->Absensi_model->check_absensi_employee($employee_id, date('Y-m-d'));
             $get_employee = $this->Employee_model->get_employee_by_id($employee_id);
             // var_dump($reason);die;
             // date('w') == 0 || date('w') == 6
@@ -81,7 +82,7 @@ class Absensi extends CI_Controller {
         if (!$this->input->is_ajax_request()) {
             exit('No direct script access allowed');
         } else {
-            $check_absen = $this->Absensi_model->check_absensi_employee($employee_id);
+            $check_absen = $this->Absensi_model->check_absensi_employee($employee_id, date('Y-m-d'));
             if (date('w') == 0 || date('w') == 6) {
                 $message = [
                     'error' => 'true',
@@ -139,6 +140,118 @@ class Absensi extends CI_Controller {
                             
                             $this->Absensi_model->check_out($employee_id, $data);
                         }
+                    }
+                }
+            }
+            echo json_encode($message);
+        }
+    }
+
+    public function check_in_manual(){
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $this->form_validation->set_rules('select_name', 'Karyawan', 'trim|callback_select_check');
+            $this->form_validation->set_rules('clock_in', 'Tanggal', 'trim|required');
+
+            if ($this->form_validation->run() == false) {
+                $message = [
+                    'errors' => 'true',
+                    'desc' => validation_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
+                    'csrfhash' => $this->security->get_csrf_hash(),
+                ];
+                
+            } else {
+                
+                $employee_id = $this->input->post('select_name', TRUE);
+                $datetime = $this->input->post('clock_in', TRUE);
+                $get_employee = $this->Employee_model->get_employee_by_id($employee_id);
+                $check_absen = $this->Absensi_model->check_absensi_employee($employee_id, date('Y-m-d', strtotime($datetime)));
+                
+                if ($check_absen) {
+                    $message = [
+                        'error' => 'true',
+                        'title' => 'Gagal!',
+                        'desc' => 'Karyawan ini sudah melakukan absensi.',
+                        'buttontext' => 'Oke, tutup'
+                    ];
+                } else {
+                    $message = [
+                        'success' => 'true',
+                        'title' => 'Berhasil!',
+                        'desc' => 'Terimakasih, Anda telah menambahkan absensi masuk untuk <span class="badge badge-soft-success">'.$get_employee['full_name'].'</span>.',
+                        'buttontext' => 'Oke, terimakasih'
+                    ];
+
+                    $data = [
+                        'employee_id' => $employee_id,
+                        'department_id' => $get_employee['department_id'],
+                        'date' => date('Y-m-d', strtotime($datetime)),
+                        'clock_in' => date('Y-m-d H:i:s', strtotime($datetime)),
+                        'presence' => 1,
+                    ];
+                    $this->Absensi_model->check_in($data);
+                }
+                // var_dump($check_absen);die;
+            }
+            echo json_encode($message);
+        }
+    }
+
+    public function check_out_manual(){
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $this->form_validation->set_rules('select_name', 'Karyawan', 'trim|callback_select_check');
+            $this->form_validation->set_rules('clock_out', 'Tanggal', 'trim|required');
+
+            if ($this->form_validation->run() == false) {
+                $message = [
+                    'errors' => 'true',
+                    'desc' => validation_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
+                    'csrfhash' => $this->security->get_csrf_hash(),
+                ];
+                
+            } else {
+                $employee_id = $this->input->post('select_name', TRUE);
+                $datetime = $this->input->post('clock_out', TRUE);
+                $check_absen = $this->Absensi_model->check_absensi_employee($employee_id, date('Y-m-d', strtotime($datetime)));
+                
+                if ($check_absen == NULL) {
+                    $message = [
+                        'error' => 'true',
+                        'title' => 'Gagal!',
+                        'desc' => 'Karyawan belum melakukan absensi masuk, silahkan tambahkan terlebih dahulu.',
+                        'buttontext' => 'Oke, tutup'
+                    ];
+                } else {
+                    if ($check_absen['clock_out']) {
+                        $message = [
+                            'error' => 'true',
+                            'title' => 'Gagal!',
+                            'desc' => 'Karyawan sudah melakukan absensi keluar hari ini.',
+                            'buttontext' => 'Oke, tutup'
+                        ];
+                    } else {
+                        $diff = strtotime(date('Y-m-d H:i:s', strtotime($datetime))) - strtotime($check_absen['clock_in']);
+                        $jam  = floor($diff / (60 * 60));
+                        $menit= $diff - $jam * (60 * 60);
+                        $total_kerja = $jam.' Jam '.floor($menit/60).' Menit';
+
+                        $message = [
+                            'success' => 'true',
+                            'title' => 'Berhasil!',
+                            'desc' => 'Terimakasih, Anda telah menambahkan absensi keluar secara manual.',
+                            'buttontext' => 'Oke, terimakasih'
+                        ];
+
+                        $data = [
+                            'clock_out' => date('Y-m-d H:i:s', strtotime($datetime)),
+                            'total_hour' => $total_kerja
+                        ];
+                        $this->Absensi_model->check_out($employee_id, $data);
                     }
                 }
             }

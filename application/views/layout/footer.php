@@ -52,12 +52,12 @@
                 nameShort();
             <?php endif; ?>
         });
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        document.onkeydown = function(e) {
-        if (e.ctrlKey && e.keyCode === 85) {
-            return false;
-            }
-        };
+        // document.addEventListener('contextmenu', event => event.preventDefault());
+        // document.onkeydown = function(e) {
+        // if (e.ctrlKey && e.keyCode === 85) {
+        //     return false;
+        //     }
+        // };
     </script>
 </body>
 </html>
