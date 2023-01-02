@@ -362,7 +362,7 @@
         
         $('#table-cuti').DataTable({
             // pageLength: 1,
-            order: [2, 'ASC'],
+            // order: [2, 'ASC'],
             scrollX:  true,
             language: { search: "",
                 searchPlaceholder: "Search",
