@@ -12,19 +12,23 @@
                 </div>
                 <div class="card-body">
                     <form class="row g-2">
-                        <?php foreach($list_cleanliness as $list) : ?>
-                            <div class="col-md-3">
-                                <input id="ca<?= $list['cleanliness_id'] ?>" type="checkbox" hidden value="<?= $list['cleanliness_id'] ?>">
-                                <label class="select-clean w-100" for="ca<?= $list['cleanliness_id'] ?>" style="cursor: pointer;">
-                                    <div class="flex-row justify-content-between card card-border border-3 p-3 target">
-                                        <h6 class="mb-0"><?= $list['cleanliness_name'] ?></h6>
-                                        <span class="feather-icon d-none text-primary">
-                                            <i data-feather="check-circle"></i>
-                                        </span>
-                                    </div>
-                                </label>
-                            </div>
-                        <?php endforeach; ?>
+                        <?php if($list_cleanliness):?>
+                            <?php foreach($list_cleanliness as $list) : ?>
+                                <div class="col-md-3">
+                                    <input id="ca<?= $list['cleanliness_id'] ?>" type="checkbox" hidden value="<?= $list['cleanliness_id'] ?>">
+                                    <label class="select-clean w-100" for="ca<?= $list['cleanliness_id'] ?>" style="cursor: pointer;">
+                                        <div class="flex-row justify-content-between card card-border border-3 p-3 target">
+                                            <h6 class="mb-0"><?= $list['cleanliness_name'] ?></h6>
+                                            <span class="feather-icon d-none text-primary">
+                                                <i data-feather="check-circle"></i>
+                                            </span>
+                                        </div>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else :?>
+                            <p class="text-center">Data kebersihan belum ada 😟 </p>
+                        <?php endif;?>
                         <input class="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
                     </form>
                 </div>
