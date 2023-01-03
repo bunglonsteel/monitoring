@@ -26,7 +26,7 @@ class Dashboard extends CI_Controller {
             
             $data['total_hadir'] = $this->Absensi_model->count_absensi_by_day(1);
             $data['total_izin'] = $this->Absensi_model->count_absensi_by_day(2);
-            $data['total_sakit'] = $this->Absensi_model->count_absensi_by_day(3);
+            $data['total_sakit'] = $this->Absensi_model->count_absensi_by_day(3) + $this->Absensi_model->count_absensi_by_day(4);
             $data['total_department'] = $this->Department_model->count_department();
             $data['total_karyawan_aktif'] = $this->Employee_model->get_employee_with_aktif(1);
             $data['total_karyawan_keluar'] = $this->Employee_model->get_employee_with_aktif(0);
@@ -46,7 +46,7 @@ class Dashboard extends CI_Controller {
         } else {
             $data['total_izin'] = $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],2);
             // var_dump( $data['total_izin']);die;
-            $data['total_sakit'] = $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],3);
+            $data['total_sakit'] = $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],3) + $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],4);
             $data['check_absen'] = $this->Absensi_model->check_absensi_employee($data['employee']['employee_id']);
             render_template('users/dashboard', $data);
         }

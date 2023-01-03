@@ -65,8 +65,8 @@
                                                     Cuti Izin / Penting
                                                 <?php elseif($cuti['cuti_type'] == 'CT') :?>
                                                     Cuti Tahunan
-                                                <?php elseif($cuti['cuti_type'] == 'CM') :?>
-                                                    Cuti Melahirkan
+                                                <?php elseif($cuti['cuti_type'] == 'CSS') :?>
+                                                    Cuti Sakit (Surat)
                                                 <?php endif; ?>
                                                 </td>
                                                 <td><?= date('d M Y', strtotime($cuti['submission_date'])) ?></td>
@@ -184,6 +184,7 @@
                             <select class="form-select" name="cuti">
                                 <option value="0" hidden>Choose...</option>
                                 <option value="1" >Cuti Sakit</option>
+                                <option value="4" >Cuti Sakit (Surat)</option>
                                 <option value="2" >Cuti Izin / Penting</option>
                                 <option value="3" >Cuti Tahunan</option>
                             </select>
@@ -362,7 +363,7 @@
         
         $('#table-cuti').DataTable({
             // pageLength: 1,
-            // order: [2, 'ASC'],
+            order: [[2, 'DESC']],
             scrollX:  true,
             language: { search: "",
                 searchPlaceholder: "Search",

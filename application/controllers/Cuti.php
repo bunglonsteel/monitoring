@@ -116,8 +116,8 @@ class Cuti extends CI_Controller {
         if (!$this->input->is_ajax_request()) {
             exit('No direct script access allowed');
         } else {
-            if ($cuti['cuti_type'] == 'CS' || $cuti['cuti_type'] == 'CI') {
-                $code_kehadiran = $cuti['cuti_type'] == 'CI' ? 2 : 3; // 2 Izin , 3 Sakit
+            if ($cuti['cuti_type'] == 'CS' || $cuti['cuti_type'] == 'CI' || $cuti['cuti_type'] == 'CSS') {
+                $code_kehadiran = ($cuti['cuti_type'] == 'CI') ? 2 : (($cuti['cuti_type'] == 'CS') ? 3 : 4); // 2 Izin , 3 Sakit, 4 Sakit dengan Surat
                 $data_cuti = ['cuti_status' => $approvecode,];
 
                 if ($approvecode == 3){ //Rejected

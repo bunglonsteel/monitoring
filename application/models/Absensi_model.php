@@ -44,7 +44,7 @@ class Absensi_model extends CI_Model {
     }
 
     public function get_absensi_per_month(){
-        return $this->db->select("date, SUM(if(presence = 1,1,0)) AS hadir, SUM(if(presence = 2,1,0)) AS izin , SUM(if(presence = 3,1,0)) AS sakit,")
+        return $this->db->select("date, SUM(if(presence = 1,1,0)) AS hadir, SUM(if(presence = 2,1,0)) AS izin , SUM(if(presence = 3 OR presence = 4,1,0)) AS sakit,")
                         ->from('absensi')
                         ->where('MONTH(date) =', date('m'))
                         ->group_by('date')
