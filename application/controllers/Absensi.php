@@ -228,12 +228,23 @@ class Absensi extends CI_Controller {
                     ];
                 } else {
                     if ($check_absen['clock_out']) {
+                        $diff = strtotime(date('Y-m-d H:i:s', strtotime($datetime))) - strtotime($check_absen['clock_in']);
+                        $jam  = floor($diff / (60 * 60));
+                        $menit= $diff - $jam * (60 * 60);
+                        $total_kerja = $jam.' Jam '.floor($menit/60).' Menit';
+
                         $message = [
                             'error' => 'true',
                             'title' => 'Gagal!',
-                            'desc' => 'Karyawan sudah melakukan absensi keluar hari ini.',
+                            'desc' => 'Terimakasih, Jam keluar karyawan berhasil dirubah.',
                             'buttontext' => 'Oke, tutup'
                         ];
+
+                        $data = [
+                            'clock_out' => date('Y-m-d H:i:s', strtotime($datetime)),
+                            'total_hour' => $total_kerja
+                        ];
+                        $this->Absensi_model->check_out($employee_id, $data);
                     } else if($check_absen['clock_out'] == null && $check_absen['presence'] == 1) {
                         $diff = strtotime(date('Y-m-d H:i:s', strtotime($datetime))) - strtotime($check_absen['clock_in']);
                         $jam  = floor($diff / (60 * 60));
