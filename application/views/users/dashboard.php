@@ -41,7 +41,7 @@ $disable = $check_absen ? 'disabled' : '';
             <!-- /Page Header -->
         <div class="hk-page-body">
             <div class="row">
-                <div class="col-md-6 mb-2">
+                <div class="col-md-4 mb-4">
                     <div class="card card-border h-100 pt-2">
                         <div class="card-body pt-3 pb-0">
                             <div class="row no-gutters align-items-center">
@@ -51,9 +51,9 @@ $disable = $check_absen ? 'disabled' : '';
                                     </h5>
                                     <p class="fs-7 mb-3">Silahkan lakukan absensi hari ini.</p>
                                 </div>
-                                <div class="col-auto">
+                                <!-- <div class="col-auto">
                                     <i class="icon dripicons-calendar me-4" style="color: #eaeaea; font-size:45px;"></i>
-                                </div>
+                                </div> -->
                                 <div class="col-12">
                                     <div class="d-block position-relative">
                                         <button <?=$disable ?> type="button" data-employeeid="<?= $employee['employee_id'] ?>" data-kehadiran="1" class="btn btn-sm btn-primary btn-animated mb-1 btn-absen">
@@ -85,37 +85,59 @@ $disable = $check_absen ? 'disabled' : '';
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-2">
-                    <div class="card card-border h-100 pt-2 mb-2">
-                        <div class="card-body pt-3 pb-md-0">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <small>Total per bulan</small>
-                                    <h5 class="text-xs fw-bold text-primary mb-0">
-                                        Izin
-                                    </h5>
-                                    <div class="h1 mb-0 fw-bold text-gray-800"><?=$total_izin ?></div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="icon dripicons-direction me-4" style="color: #eaeaea; font-size:45px;"></i>
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card card-border h-100 pt-2 mb-2">
+                                <div class="card-body pt-3 pb-md-1">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <small>Total Pertahun</small>
+                                            <h5 class="text-xs fw-bold text-primary mb-0">
+                                                Izin
+                                            </h5>
+                                            <div class="h1 mb-0 fw-bold text-gray-800"><?=$total_izin ?></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="icon dripicons-direction me-4" style="color: #eaeaea; font-size:45px;"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-2">
-                    <div class="card card-border h-100 pt-2 mb-2">
-                        <div class="card-body pt-3 pb-md-0">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <small>Total per bulan</small>
-                                    <h5 class="text-xs fw-bold text-primary mb-0">
-                                        Sakit
-                                    </h5>
-                                    <div class="h1 mb-0 fw-bold text-gray-800"><?=$total_sakit ?></div>
+                        <div class="col-md-4">
+                            <div class="card card-border h-100 pt-2 mb-2">
+                                <div class="card-body pt-3 pb-md-1">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <small>Total Pertahun</small>
+                                            <h5 class="text-xs fw-bold text-primary mb-0">
+                                                Sakit
+                                            </h5>
+                                            <div class="h1 mb-0 fw-bold text-gray-800"><?=$total_sakit ?></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="icon dripicons-pulse me-4" style="color: #eaeaea; font-size:45px;"></i>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="icon dripicons-graph-line me-4" style="color: #eaeaea; font-size:45px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card card-border h-100 pt-2 mb-2">
+                                <div class="card-body pt-3 pb-md-1">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <small>Jumlah</small>
+                                            <h5 class="text-xs fw-bold text-primary mb-0">
+                                                Sisa Cuti
+                                            </h5>
+                                            <div class="h1 mb-0 fw-bold text-gray-800"><?=$employee['remaining_days_off'] ?></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="icon dripicons-rocket me-4" style="color: #eaeaea; font-size:45px;"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

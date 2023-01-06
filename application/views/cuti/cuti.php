@@ -121,7 +121,7 @@
                                                         </span>
                                                     </button>
                                                     <?php if($cuti['cuti_type'] == 'CT') :?>
-                                                        <button class="btn btn-icon btn-sm btn-soft-dark edit-cuti" data-cutiid="<?= $cuti['cuti_id'] ?>" data-start="<?= $cuti['start_date'] ?>" data-end="<?= $cuti['end_date'] ?>" data-reason="<?= $cuti['cuti_reason'] ?>" data-bs-toggle="modal" data-bs-target="#modal-edit" type="button">
+                                                        <button <?= $disable ?> class="btn btn-icon btn-sm btn-soft-dark edit-cuti" data-cutiid="<?= $cuti['cuti_id'] ?>" data-start="<?= $cuti['start_date'] ?>" data-end="<?= $cuti['end_date'] ?>" data-total="<?= $cuti['total_day'] ?>" data-reason="<?= $cuti['cuti_reason'] ?>" data-bs-toggle="modal" data-bs-target="#modal-edit" type="button">
                                                             <span class="icon fs-8">
                                                                 <i class="icon dripicons-pencil"></i>
                                                             </span>
@@ -222,8 +222,9 @@
                         </div>
                         <div class="col-12">
                             <p class="fs-8">Catatan :</p>
-                            <p class="fs-8">Jika cuti tgl sekarang ingin ambil cuti 1 hari berarti <strong>(tgl sekarang + tgl besok)</strong>.</p>
-                            <p class="fs-8">Dan tgl besok atau atau tgl berakhir berarti anda diwajibkan masuk.</p>
+                            <p class="fs-8 mb-1">- Jika cuti tgl sekarang ingin ambil cuti 1 hari berarti <strong>( tgl sekarang + tgl besok )</strong>, 
+                            Dan tgl besok atau atau tgl berakhir berarti anda diwajibkan masuk.</p>
+                            <p class="fs-8">- Untuk cuti sakit (surat) karyawan wajib membawa surat sakit ketika mulai kerja kembali dan cuti sakit (surat) tidak akan mengurangi sisa cuti anda.</p>
                         </div>
                         <div class="col-12 mt-3">
                             <div class="form-floating">
@@ -239,6 +240,16 @@
                 <div class="modal-footer p-2" style="border-top: none ;">
                     <input id="csrf" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
                     <input type="hidden" name="employee_id" value="<?= $employee['employee_id'] ?>">
+                    <div class="d-flex me-auto">
+                        <div class="me-2 px-3 border border-2 border-light rounded-3">
+                            <span class="fs-8">Sisa Cuti</span>
+                            <h6 class="mb-0 fw-bold"><?= $employee['remaining_days_off'] ?></h6>
+                        </div>
+                        <div class="px-3 border border-2 border-light rounded-3">
+                            <span class="fs-8">Total Hari</span>
+                            <h6 id="hari" class="mb-0 fw-bold">-</h6>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-soft-dark fs-7" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary fs-7">Ajukan</button>
                 </div>
@@ -310,6 +321,16 @@
                 <div class="modal-footer p-2" style="border-top: none ;">
                     <input id="cuti" type="hidden">
                     <input id="csrf-e" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
+                    <div class="d-flex me-auto">
+                        <div class="px-3 me-2 border border-2 border-light rounded-3">
+                            <span class="fs-8">Sisa Cuti</span>
+                            <h6 id="total" class="mb-0 fw-bold">-</h6>
+                        </div>
+                        <div class="px-3 border border-2 border-light rounded-3">
+                            <span class="fs-8">Total Hari</span>
+                            <h6 id="hari" class="mb-0 fw-bold">-</h6>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-soft-dark fs-7" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary fs-7">Update Jadwal</button>
                 </div>
@@ -392,11 +413,13 @@
             const startDate = $(this).data('start')
             const endDate = $(this).data('end')
             const reason = $(this).data('reason')
+            const totalday = $(this).data('total')
 
             $('#modal-edit #cuti').val(cutiId)
             $('#modal-edit #start-date').val(startDate)
             $('#modal-edit #end-date').val(endDate)
             $('#modal-edit #reason').html(reason)
+            $('#modal-edit #total').html(totalday)
             
             $('#start-date').daterangepicker({
                 singleDatePicker: true,
@@ -521,6 +544,29 @@
             });
             return false;
         })
+
+        const countDay = function(){
+            let startDate = new Date($('#start-date').val())
+            let endDate = new Date($('#end-date').val())
+            let result;
+
+            $('#start-date').change(function (e) { 
+                e.preventDefault();
+                startDate = new Date($('#start-date').val())
+                const datediff = endDate.getTime() - startDate.getTime();
+                result = datediff / (1000 * 3600 * 24)
+                $('#hari').text(result)
+            });
+            
+            $('#end-date').change(function (e) { 
+                e.preventDefault();
+                endDate = new Date($('#end-date').val())
+                const datediff = endDate.getTime() - startDate.getTime();
+                result = datediff / (1000 * 3600 * 24)
+                $('#hari').text(result)
+            });
+        }
+        countDay()
 
         function sweatalert_confirm(type, res){
             let icon;

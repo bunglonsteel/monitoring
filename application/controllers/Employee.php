@@ -70,6 +70,7 @@ class Employee extends CI_Controller {
                     'department_id' => htmlspecialchars($department),
                     'gender' => htmlspecialchars($gender),
                     'join_date' => date('Y-m-d'),
+                    'remaining_days_off' => 12,
                     'image_profile' => 'default.jpg'
                 ];
 
@@ -210,6 +211,38 @@ class Employee extends CI_Controller {
             exit('No direct script access allowed');
         } else {
 
+        }
+    }
+
+    public function update_sisa_cuti($employee_id = '', $jumlah_cuti = ''){
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            // var_dump($employee_id);die;
+            $check = $this->Employee_model->get_employee_by_id($employee_id);
+
+            if ($check == NULL) {
+                $message = [
+                    'error' => 'true',
+                    'title' => 'Gagal!',
+                    'desc' => 'Karyawan tidak ada!!',
+                    'buttontext' => 'Oke, terimakasih'
+                ];
+            } else {
+                $message = [
+                    'success' => 'true',
+                    'title' => 'Berhasil!',
+                    'desc' => 'Sisa cuti karyawan berhasil diupdate',
+                    'buttontext' => 'Oke, terimakasih'
+                ];
+
+                $data = [
+                    'remaining_days_off' => $jumlah_cuti
+                ];
+                $this->Employee_model->update_profile($employee_id, $data);
+            }
+
+            echo json_encode($message);
         }
     }
 

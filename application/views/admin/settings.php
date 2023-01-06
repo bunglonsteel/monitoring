@@ -33,7 +33,7 @@
                                 <div class="tab-pane fade show active" id="situs">
                                     <form id="update-site" action="<?= base_url() ?>settings/update_site" method="POST">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label class="fs-8 mb-1">Nama situs
                                                     <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
                                                 </label>
@@ -41,14 +41,14 @@
                                                     <span class="input-affix-wrapper">
                                                         <span class="input-prefix">
                                                             <span class="feather-icon">
-                                                                <i data-feather="user"></i>
+                                                                <i data-feather="globe"></i>
                                                             </span>
                                                         </span>
                                                         <input type="text" name="site_name" class="form-control" placeholder="Masukan nama situs" value="<?= $settings['site_name'] ?>">
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label class="fs-8 mb-1">Judul situs
                                                     <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
                                                 </label>
@@ -56,10 +56,26 @@
                                                     <span class="input-affix-wrapper">
                                                         <span class="input-prefix">
                                                             <span class="feather-icon">
-                                                                <i data-feather="user"></i>
+                                                                <i data-feather="layout"></i>
                                                             </span>
                                                         </span>
                                                         <input type="text" name="site_title" class="form-control" placeholder="Masukan judul" value="<?= $settings['site_title'] ?>">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="fs-8 mb-1">No.kontak admin
+                                                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-affix-wrapper">
+                                                        <span class="input-prefix">
+                                                            <span class="feather-icon">
+                                                                <i data-feather="phone-call"></i>
+                                                            </span>
+                                                        </span>
+                                                        <input type="text" name="no_tlp" class="form-control" placeholder="ex. 0812345678910" 
+                                                        value="<?= $settings['contact'] ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                                                     </span>
                                                 </div>
                                             </div>

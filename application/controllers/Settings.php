@@ -37,11 +37,13 @@ class Settings extends CI_Controller {
         } else {
                 $this->form_validation->set_rules('site_name', 'Nama situs', 'trim|required');
                 $this->form_validation->set_rules('site_title', 'Judul situs', 'trim|required');
+                $this->form_validation->set_rules('no_tlp', 'No. Kontak', 'trim|required');
                 $this->form_validation->set_rules('description', 'Deskripsi', 'trim|required');
     
                 
                 $site_name  = $this->input->post('site_name', TRUE);
                 $site_title = $this->input->post('site_title', TRUE);
+                $contact    = $this->input->post('no_tlp', TRUE);
                 $desc       = $this->input->post('description', TRUE);
 
                 if ($this->form_validation->run() == false) {
@@ -55,6 +57,7 @@ class Settings extends CI_Controller {
                         'site_name' => htmlspecialchars($site_name),
                         'site_title' => htmlspecialchars($site_title),
                         'description' => htmlspecialchars($desc),
+                        'contact' => htmlspecialchars($contact)
                     ];
 
                     $message = [

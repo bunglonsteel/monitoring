@@ -36,7 +36,7 @@ class Absensi_model extends CI_Model {
     public function count_absensi_by_employee($employee_id, $presence){
         return $this->db->select('date','employee_id','presence')
                         ->from('absensi')
-                        ->where('DATE_FORMAT(date,"%Y-%m")',date('Y-m'))
+                        ->where('DATE_FORMAT(date,"%Y")',date('Y'))
                         ->where('employee_id', $employee_id)
                         ->where('presence', $presence)
                         ->get()

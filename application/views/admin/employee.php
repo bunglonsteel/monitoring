@@ -31,8 +31,9 @@
                                     <thead>
                                         <tr>
                                             <th>Nama</th>
-                                            <th>Department / bagian</th>
+                                            <th>Bagian</th>
                                             <th>Jenis Kelamin</th>
+                                            <th>Sisa Cuti</th>
                                             <th>Tanggal Gabung</th>
                                             <th>Status</th>
                                             <th class="text-center">Action</th>
@@ -54,17 +55,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                            <!-- <select class="form-control select2">
-                                                <option>Select</option>
-                                            </select> -->
-                                                <!-- <button type="button" class="btn fs-8 btn-soft-dark"> -->
-                                                <?= $emp['name_department'] ?> 
-                                                    <!-- <span class="badge badge-sm badge-light">
-                                                        <span class="feather-icon">
-                                                            <i data-feather="edit-3"></i>
-                                                        </span>
-                                                    </span>
-                                                </button> -->
+                                                <?= $emp['name_department'] ?>
                                             </td>
                                             <td>
                                                 <?php if($emp['gender'] == 1) :?>
@@ -76,6 +67,10 @@
                                                     👱‍♀️ Perempuan
                                                     </span>
                                                 <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <input class="form-control text-center sisa-cuti" type="text" value="<?= $emp['remaining_days_off'] ?>" data-id="<?= $emp['employee_id'] ?>"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" style="width:50px; line-height:1.2;">
                                             </td>
                                             <td><?= date('d M Y', strtotime($emp['join_date'])) ?></td>
                                             <td>
@@ -355,6 +350,39 @@
                 type: "POST",
                 url: url, 
                 data: $(this).serialize(),
+                dataType: "json",  
+                cache: false,
+                success: function(response){
+                    if (response.success) {
+                        sweatalert_confirm('success', response)
+                    }
+
+                    if (response.error) {
+                        sweatalert_confirm('danger', response)
+                    }
+                },
+                error : function(xhr, status, errorThrown){
+                    console.log(xhr.responseText)
+                    console.log(status)
+                    console.log(errorThrown)
+                }
+            });
+            return false;
+        });
+
+        $(document).on('change', '.sisa-cuti', function(e) {
+            e.preventDefault()
+            const employeeId = $(this).data('id')
+            const jumlahCuti = $(this).val()
+
+            const url = '<?= base_url('employee/update_sisa_cuti/') ?>'+employeeId+'/'+jumlahCuti;
+            const csrfName = '<?= $this->security->get_csrf_token_name()?>'
+            const csrfHash = '<?= $this->security->get_csrf_hash()?>'
+            // console.log(url)
+            $.ajax({
+                type: "POST",
+                url: url, 
+                data: {[csrfName] : csrfHash},
                 dataType: "json",  
                 cache: false,
                 success: function(response){
