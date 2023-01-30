@@ -16,9 +16,9 @@ class Absensi_model extends CI_Model {
                         ->result_array();
     }
 
-    public function check_absensi_employee($employee_id){
+    public function check_absensi_employee($employee_id, $date){
         $check = [
-            'date' => date('Y-m-d'),
+            'date' => $date,
             'employee_id' => $employee_id,
         ];
         return $this->db->get_where('absensi', $check)->row_array();

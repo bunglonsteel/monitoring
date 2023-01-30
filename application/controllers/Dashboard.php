@@ -47,7 +47,7 @@ class Dashboard extends CI_Controller {
             $data['total_izin'] = $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],2);
             // var_dump( $data['total_izin']);die;
             $data['total_sakit'] = $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],3) + $this->Absensi_model->count_absensi_by_employee($data['employee']['employee_id'],4);
-            $data['check_absen'] = $this->Absensi_model->check_absensi_employee($data['employee']['employee_id']);
+            $data['check_absen'] = $this->Absensi_model->check_absensi_employee($data['employee']['employee_id'], date('Y-m-d'));
             render_template('users/dashboard', $data);
         }
     }
