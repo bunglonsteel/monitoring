@@ -109,10 +109,9 @@ class Cuti extends CI_Controller {
                             'buttontext' => 'Oke, terimakasih'
                         ];
 
+                        $this->Cuti_model->add_cuti($data);
                         $pesan = "Hallo, Admin👋\n\n".$employee['full_name']."\n\nTelah mengajukan cuti silahkan cek menu cuti dan segera lakukan konfirmasi karyawan👍";
                         send_message_whatsapp($settings['contact'], $pesan);
-
-                        $this->Cuti_model->add_cuti($data);
                     }
                     
                 }
@@ -145,14 +144,14 @@ class Cuti extends CI_Controller {
                         'desc' => 'Cuti berhasil di ditolak ',
                         'buttontext' => 'Oke, terimakasih'
                     ];
+
+                    $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
                     // Message Whatsapp
                     $pesan = "Hallo, ".$employee['full_name']."👋\nMohon maaf sekali tanggal pengajuan "
                     .$name_cuti[$cuti['cuti_type']]
                     ." anda "
                     .date('l, d F Y', strtotime($cuti['submission_date']))
                     ." ditolak. Silahkan ajukan kembali dihari nanti👍";
-
-                    $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
                 } else {
                     $total_sisa_cuti = $employee['remaining_days_off'] - $cuti['number_of_days'];
                     if ($cuti['cuti_type'] != 'CSS') {
@@ -181,8 +180,8 @@ class Cuti extends CI_Controller {
                     ." berhasil disetujui, Semoga cuti anda bermanfaat👍";
                 }
 
-                send_message_whatsapp($employee['contact'], $pesan);
                 $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
+                send_message_whatsapp($employee['contact'], $pesan);
             } else { // Cuti Tahunan
                 $data_cuti = ['cuti_status' => $approvecode];
 
@@ -200,8 +199,8 @@ class Cuti extends CI_Controller {
                     .date('l, d F Y', strtotime($cuti['submission_date']))
                     ." ditolak. Silahkan ajukan kembali dihari nanti👍";
 
-                    send_message_whatsapp($employee['contact'], $pesan);
                     $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
+                    send_message_whatsapp($employee['contact'], $pesan);
                 } elseif ($approvecode == 2){ //Approve
                     $total_sisa_cuti = $employee['remaining_days_off'] - $cuti['number_of_days'];
                     $message = [
@@ -216,9 +215,9 @@ class Cuti extends CI_Controller {
                     .date('l, d F Y', strtotime($cuti['submission_date']))
                     ." berhasil disetujui, Semoga cuti anda bermanfaat👍";
 
-                    send_message_whatsapp($employee['contact'], $pesan);
                     $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
                     $this->Employee_model->update_profile($employee['employee_id'], ['remaining_days_off' => $total_sisa_cuti]);
+                    send_message_whatsapp($employee['contact'], $pesan);
                 } else { // Approve but Modified
                     
                     $this->form_validation->set_rules('start_date', 'Mulai cuti', 'trim|required|callback_select_date');
@@ -266,9 +265,9 @@ class Cuti extends CI_Controller {
                             .date('l, d F Y', strtotime($cuti['submission_date']))
                             ." berhasil disetujui tetapi ada perubahan silahkan cek diwebsite, Semoga cuti anda bermanfaat👍";
 
-                            send_message_whatsapp($employee['contact'], $pesan);
                             $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
                             $this->Employee_model->update_profile($employee['employee_id'], ['remaining_days_off' => $total_sisa_cuti]);
+                            send_message_whatsapp($employee['contact'], $pesan);
                         }
                         
                     }
