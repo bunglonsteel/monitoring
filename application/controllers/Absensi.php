@@ -322,9 +322,9 @@ class Absensi extends CI_Controller {
                     ];
                 } else {
                     
-                    $total_days = $this->countDays(date('Y',strtotime($result['date'])), date('n',strtotime($result['date'])), array(0, 6), 'day');
-                    $total_sat_sun = $this->countDays(date('Y',strtotime($result['date'])), date('n',strtotime($result['date'])), array(0, 6), 'satsun');
-                    $total_alpa = $this->countDays(date('Y',strtotime($result['date'])), date('n',strtotime($result['date'])), array(0, 6), 'day') - $result['hadir'];
+                    $total_days = $this->countDays(strtotime($result['date']), 'day');
+                    $total_sat_sun = $this->countDays(strtotime($result['date']), 'satsun');
+                    $total_alpa = $total_days - $result['hadir'];
 
                     $message = [
                         'success' => 'true',
@@ -394,17 +394,21 @@ class Absensi extends CI_Controller {
         }
     }
 
-    private function countDays($year, $month, $ignore, $type) {
+    private function countDays($date, $type) {
+
+        $year  = date('Y', $date);
+        $month = date('n', $date);
+        $total_date_per_month = date('t', $date);
+
+        $start = mktime(0, 0, 0, $month, 1, $year);
+        $end   = mktime(0, 0, 0, $month, $total_date_per_month, $year);
         $day = 0;
         $satsun = 0;
-        $counter = mktime(0, 0, 0, $month, 1, $year);
-        while (date("n", $counter) == $month) {
-            if (in_array(date("w", $counter), $ignore) == false) {
-                $day++;
-            } else {
-                $satsun++;
-            }
-            $counter = strtotime("+1 day", $counter);
+
+        while(date('Y-m-d', $start) <= date('Y-m-d', $end)){
+            $day += date('N', $start) < 6  ? 1 : 0;
+            $satsun += date('N', $start) >= 6 ? 1 : 0;
+            $start = strtotime("+1 day", $start);
         }
 
         if($type == 'satsun'){
