@@ -70,7 +70,7 @@
         });
 
         listCuti.forEach(e => {
-            if (e.cuti_type == 'CS') {
+            if (e.cuti_type == 'CS' || e.cuti_type == 'CSS') {
                 calendar.addEvent({
                     backgroundColor: 'rgb(255,74,74,1)',
                     borderColor: 'rgb(255,74,74,1)',

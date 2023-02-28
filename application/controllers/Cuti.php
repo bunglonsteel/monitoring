@@ -161,7 +161,7 @@ class Cuti extends CI_Controller {
                         $data_absensi = [
                             'employee_id' => $cuti['employee_id'],
                             'department_id' => $employee['department_id'],
-                            'date' => date('Y-m-d', strtotime('+'.$i.' day', strtotime(date('Y-m-d')))),
+                            'date' => date('Y-m-d', strtotime('+'.$i.' day', strtotime($cuti['start_date']))),
                             'presence' => $code_kehadiran,
                         ];
                         $this->Absensi_model->check_in($data_absensi);
