@@ -61,15 +61,19 @@ class Cuti extends CI_Controller {
                 
             } else {
                 
-                $employee_id = $this->input->post('employee_id', TRUE);
-                $cuti_type = $this->input->post('cuti', TRUE);
-                $start_date = $this->input->post('start_date', TRUE);
-                $end_date = $this->input->post('end_date', TRUE);
-                $reason = $this->input->post('reason', TRUE);
-                
-                $diff = strtotime($end_date) - strtotime($start_date);
-                $total_day = floor($diff /  (60 * 60 * 24) );
-                
+                $employee_id    = $this->input->post('employee_id', TRUE);
+                $cuti_type      = $this->input->post('cuti', TRUE);
+                $start_date     = strtotime($this->input->post('start_date', TRUE));
+                $end_date       = strtotime($this->input->post('end_date', TRUE));
+                $reason         = $this->input->post('reason', TRUE);
+
+                $start_temp_date = $start_date;
+                $total_day = 0;
+                while(date('Y-m-d', $start_temp_date) < date('Y-m-d', $end_date)){
+                    $total_day += date('N', $start_temp_date) < 6 ? 1 : 0;
+                    $start_temp_date = strtotime("+1 day", $start_temp_date);
+                }
+
                 $check_cuti_now = $this->Cuti_model->get_cuti_datenow($employee_id, date('Y-m-d'));
                 $employee = $this->Employee_model->get_employee_by_id($employee_id);
                 // var_dump($check_cuti_now);die;
@@ -96,8 +100,8 @@ class Cuti extends CI_Controller {
                             'employee_id' => htmlspecialchars($employee_id) ,
                             'cuti_type' => htmlspecialchars($cuti_type),
                             'submission_date' => date('Y-m-d'),
-                            'start_date' => htmlspecialchars($start_date),
-                            'end_date' => htmlspecialchars($end_date),
+                            'start_date' => date('Y-m-d', $start_date),
+                            'end_date' => date('Y-m-d', $end_date),
                             'number_of_days' => $total_day,
                             'cuti_status' => 1,
                             'cuti_reason' => htmlspecialchars($reason),
@@ -133,7 +137,7 @@ class Cuti extends CI_Controller {
             
             $name_cuti = ['CS' => 'Cuti Sakit', 'CI' => 'Cuti Izin', 'CSS' => 'Cuti Sakit Surat', 'CT' => 'Cuti Tahunan'];
             
-            if ($cuti['cuti_type'] == 'CS' || $cuti['cuti_type'] == 'CI' || $cuti['cuti_type'] == 'CSS') {
+            if ($cuti['cuti_type'] != 'CT') {
                 $code_kehadiran = ($cuti['cuti_type'] == 'CI') ? 2 : (($cuti['cuti_type'] == 'CS') ? 3 : 4); // 2 Izin , 3 Sakit, 4 Sakit dengan Surat
                 $data_cuti = ['cuti_status' => $approvecode,];
 
@@ -157,15 +161,24 @@ class Cuti extends CI_Controller {
                     if ($cuti['cuti_type'] != 'CSS') {
                         $this->Employee_model->update_profile($employee['employee_id'], ['remaining_days_off' => $total_sisa_cuti]);
                     }
-                    for ($i= 0; $i < $cuti['number_of_days']; $i++) { 
-                        $data_absensi = [
-                            'employee_id' => $cuti['employee_id'],
-                            'department_id' => $employee['department_id'],
-                            'date' => date('Y-m-d', strtotime('+'.$i.' day', strtotime($cuti['start_date']))),
-                            'presence' => $code_kehadiran,
-                        ];
-                        $this->Absensi_model->check_in($data_absensi);
+
+                    $start_date = strtotime($cuti['start_date']);
+                    $end_date   = strtotime($cuti['end_date']);
+
+                    $data_absensi = [];
+                    while(date('Y-m-d', $start_date) < date('Y-m-d', $end_date)){
+                        if(date('N', $start_date) < 6){
+                            $absensi = [
+                                'employee_id' => $cuti['employee_id'],
+                                'department_id' => $employee['department_id'],
+                                'date' => date('Y-m-d', $start_date),
+                                'presence' => $code_kehadiran,
+                            ];
+                            $data_absensi[] = $absensi;
+                        }
+                        $start_date = strtotime("+1 day", $start_date);
                     }
+                    $this->db->insert_batch('absensi',$data_absensi);
                     $message = [
                         'success' => 'true',
                         'title' => 'Berhasil!',
@@ -231,11 +244,15 @@ class Cuti extends CI_Controller {
                             'csrfHash' => $this->security->get_csrf_hash(),
                         ];
                     } else {
-                        $start_date = $this->input->post('start_date', TRUE);
-                        $end_date = $this->input->post('end_date', TRUE);
+                        $start_date = strtotime($this->input->post('start_date', TRUE));
+                        $end_date   = strtotime($this->input->post('end_date', TRUE));
 
-                        $diff = strtotime($end_date) - strtotime($start_date);
-                        $total_day = floor($diff /  (60 * 60 * 24) );
+                        $start_temp_date = $start_date;
+                        $total_day = 0;
+                        while(date('Y-m-d', $start_temp_date) < date('Y-m-d', $end_date)){
+                            $total_day += date('N', $start_temp_date) < 6 ? 1 : 0;
+                            $start_temp_date = strtotime("+1 day", $start_temp_date);
+                        }
 
                         $total_sisa_cuti = $employee['remaining_days_off'] - $total_day;
                         if ($total_sisa_cuti < 0) {
@@ -247,8 +264,8 @@ class Cuti extends CI_Controller {
                             ];
                         } else {
                             $data_cuti = [
-                                'start_date' => htmlspecialchars($start_date),
-                                'end_date' => htmlspecialchars($end_date),
+                                'start_date' => date('Y-m-d', $start_date),
+                                'end_date' => date('Y-m-d', $end_date),
                                 'cuti_status' => $approvecode,
                                 'number_of_days' => $total_day,
                             ];

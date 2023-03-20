@@ -553,22 +553,38 @@
             $('#start-date').change(function (e) { 
                 e.preventDefault();
                 startDate = new Date($('#start-date').val())
-                const datediff = endDate.getTime() - startDate.getTime();
-                result = datediff / (1000 * 3600 * 24)
+                result = getBusinessDatesCount(startDate, endDate)
                 $('#hari').text(result)
             });
             
             $('#end-date').change(function (e) { 
                 e.preventDefault();
                 endDate = new Date($('#end-date').val())
-                const datediff = endDate.getTime() - startDate.getTime();
-                result = datediff / (1000 * 3600 * 24)
+                result = getBusinessDatesCount(startDate, endDate)
                 $('#hari').text(result)
             });
         }
         countDay()
 
-        function sweatalert_confirm(type, res){
+        Date.prototype.addDays = function( days ) {
+            var date = new Date(this.valueOf())
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+
+        const getBusinessDatesCount = function(startDate, endDate) {
+            var count = -1;
+            var curDate = startDate;
+            while (curDate <= endDate) {
+                var dayOfWeek = curDate.getDay();
+                var isWeekend = (dayOfWeek == 6) || (dayOfWeek == 0); 
+                if(!isWeekend)count++;
+                curDate = curDate.addDays(1);
+            }
+            return count;
+        }
+
+        const sweatalert_confirm = function(type, res){
             let icon;
             let classHeader;
             if (type == 'success') {
