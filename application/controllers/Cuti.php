@@ -45,7 +45,7 @@ class Cuti extends CI_Controller {
         }
         $this->form_validation->set_rules('cuti', 'Kategori Cuti', 'trim|max_length[1]|callback_select_check');
         $this->form_validation->set_rules('start_date', 'Mulai cuti', 'trim|required|callback_select_date');
-        $this->form_validation->set_rules('end_date', 'Berakhir cuti', 'trim|required|callback_not_matches');
+        $this->form_validation->set_rules('end_date', 'Berakhir cuti', 'trim|required|callback_select_end_date');
         $this->form_validation->set_rules('reason', 'Alasan Cuti', 'trim|required');
 
         if (!$this->input->is_ajax_request()) {
@@ -69,7 +69,7 @@ class Cuti extends CI_Controller {
 
                 $start_temp_date = $start_date;
                 $total_day = 0;
-                while(date('Y-m-d', $start_temp_date) < date('Y-m-d', $end_date)){
+                while(date('Y-m-d', $start_temp_date) <= date('Y-m-d', $end_date)){
                     $total_day += date('N', $start_temp_date) < 6 ? 1 : 0;
                     $start_temp_date = strtotime("+1 day", $start_temp_date);
                 }
@@ -106,6 +106,27 @@ class Cuti extends CI_Controller {
                             'cuti_status' => 1,
                             'cuti_reason' => htmlspecialchars($reason),
                         ];
+
+                        if ($cuti_type == 4) {
+                            $config['allowed_types']    = 'jpg|png|jpeg';
+                            $config['max_size']         = '500';
+                            $config['upload_path']      = './public/image/letter';
+                            $config['file_ext_tolower'] = TRUE;
+                            $config['encrypt_name']     = TRUE;
+                            $this->load->library('upload', $config);
+                            if (!$this->upload->do_upload('image')) {
+                                $message = [
+                                    'errors' => 'true',
+                                    'desc' => $this->upload->display_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
+                                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
+                                    'csrfHash' => $this->security->get_csrf_hash(),
+                                ];
+                                echo json_encode($message);die;
+                            } else {
+                                $new_image = $this->upload->data('file_name');
+                                $data['cuti_file_letter'] = $new_image;
+                            }
+                        }
                         $message = [
                             'success' => 'true',
                             'title' => 'Berhasil!',
@@ -166,7 +187,7 @@ class Cuti extends CI_Controller {
                     $end_date   = strtotime($cuti['end_date']);
 
                     $data_absensi = [];
-                    while(date('Y-m-d', $start_date) < date('Y-m-d', $end_date)){
+                    while(date('Y-m-d', $start_date) <= date('Y-m-d', $end_date)){
                         if(date('N', $start_date) < 6){
                             $absensi = [
                                 'employee_id' => $cuti['employee_id'],
@@ -249,7 +270,7 @@ class Cuti extends CI_Controller {
 
                         $start_temp_date = $start_date;
                         $total_day = 0;
-                        while(date('Y-m-d', $start_temp_date) < date('Y-m-d', $end_date)){
+                        while(date('Y-m-d', $start_temp_date) <= date('Y-m-d', $end_date)){
                             $total_day += date('N', $start_temp_date) < 6 ? 1 : 0;
                             $start_temp_date = strtotime("+1 day", $start_temp_date);
                         }
@@ -297,29 +318,25 @@ class Cuti extends CI_Controller {
 
     function select_check($str){
         if ($str == '0'){
-                $this->form_validation->set_message('select_check', 'The {field} field is required.');
-                return FALSE;
-        }else{
-                return TRUE;
+            $this->form_validation->set_message('select_check', 'The {field} field is required.');
+            return FALSE;
         }
+        return TRUE;
     }
 
     function select_date($date){
         if ($date <= date('Y-m-d', strtotime('-1 day', strtotime(date('Y-m-d'))))){
-                $this->form_validation->set_message('select_date', 'The {field} cannot be less than the current date.');
-                return FALSE;
-        } else {
-                return TRUE;
-        }
-    }
-
-    function not_matches($date){
-        if ($date == $this->input->post('start_date', TRUE)){
-            $this->form_validation->set_message('not_matches', 'The {field} cannot be the same as the start date.');
+            $this->form_validation->set_message('select_date', 'The {field} cannot be less than the current date.');
             return FALSE;
-        } else {
-            return TRUE;
         }
+        return TRUE;
+    }
+    function select_end_date($date){
+        if ($date < date('Y-m-d', strtotime($this->input->post('start_date')))){
+            $this->form_validation->set_message('select_end_date', 'The {field} cannot be less than the start date.');
+            return FALSE;
+        }
+        return TRUE;
     }
 
 }

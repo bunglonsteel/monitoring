@@ -69,7 +69,7 @@
             <div class="menu-gap"></div>
             <div class="menu-group">
                 <div class="nav-header">
-                    <span>Aplikasi</span>
+                    <span>Aktivitas</span>
                 </div>
                 <ul class="navbar-nav flex-column">
                     <li class="nav-item">
@@ -145,6 +145,77 @@
                         </a>
                     </li>
 
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#project">
+                            <span class="nav-icon-wrap">
+                                <span class="feather-icon">
+                                    <i class="form-icon" data-feather="layers"></i>
+                                </span>
+                            </span>
+                            <span class="nav-link-text">Pekerjaan</span>
+                        </a>
+                        <ul id="project" class="nav flex-column collapse  nav-children">
+                            <li class="nav-item">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item <?php if($this->uri->segment(1) == 'project') : ?> active <?php endif;?>">
+                                        <a class="nav-link" href="<?= base_url('project') ?>">
+                                            <span class="nav-link-text">Project</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item <?php if($this->uri->segment(1) == 'task') : ?> active <?php endif;?>">
+                                        <a class="nav-link" href="<?= base_url('task') ?>">
+                                            <span class="nav-link-text">Tugas</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
+                            data-bs-target="#cleanliness">
+                            <span class="nav-icon-wrap">
+                                <span class="feather-icon">
+                                    <i class="form-icon" data-feather="trash"></i>
+                                </span>
+                            </span>
+                            <span class="nav-link-text">Kebersihan</span>
+                        </a>
+                        <ul id="cleanliness" class="nav flex-column collapse  nav-children">
+                            <li class="nav-item">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness-progress') : ?> active <?php endif;?>">
+                                        <a class="nav-link" href="<?= base_url('cleanliness-progress') ?>">
+                                            <span class="nav-link-text">Progress Kebersihan</span>
+                                        </a>
+                                    </li>
+                                    <?php if($this->session->userdata('role_id') == 2) : ?>
+                                        <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness') : ?> active <?php endif;?>">
+                                            <a class="nav-link" href="<?= base_url('cleanliness') ?>">
+                                                <span class="nav-link-text">Semua Kebersihan</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php if($this->uri->segment(1) == 'laporan-kebersihan') : ?> active <?php endif;?>">
+                                            <a class="nav-link" href="<?= base_url('laporan-kebersihan') ?>">
+                                                <span class="nav-link-text">Laporan Kebersihan</span>
+                                            </a>
+                                        </li>
+                                    <?php endif;?>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                </ul>
+            </div>
+
+            <div class="menu-gap"></div>
+            <div class="menu-group">
+                <div class="nav-header">
+                    <span>Lainnya</span>
+                </div>
+                <ul class="navbar-nav flex-column">
                     <li class="nav-item <?php if($this->uri->segment(1) == 'events') : ?> active <?php endif;?>">
                         <a class="nav-link" href="<?= base_url('events') ?>">
                             <span class="nav-icon-wrap">
@@ -196,42 +267,6 @@
                             </li>
                         </ul>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#cleanliness">
-                            <span class="nav-icon-wrap">
-                                <span class="feather-icon">
-                                    <i class="form-icon" data-feather="trash"></i>
-                                </span>
-                            </span>
-                            <span class="nav-link-text">Kebersihan</span>
-                        </a>
-                        <ul id="cleanliness" class="nav flex-column collapse  nav-children">
-                            <li class="nav-item">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness-progress') : ?> active <?php endif;?>">
-                                        <a class="nav-link" href="<?= base_url('cleanliness-progress') ?>">
-                                            <span class="nav-link-text">Progress Kebersihan</span>
-                                        </a>
-                                    </li>
-                                    <?php if($this->session->userdata('role_id') == 2) : ?>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness') : ?> active <?php endif;?>">
-                                            <a class="nav-link" href="<?= base_url('cleanliness') ?>">
-                                                <span class="nav-link-text">Semua Kebersihan</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'laporan-kebersihan') : ?> active <?php endif;?>">
-                                            <a class="nav-link" href="<?= base_url('laporan-kebersihan') ?>">
-                                                <span class="nav-link-text">Laporan Kebersihan</span>
-                                            </a>
-                                        </li>
-                                    <?php endif;?>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    
                 </ul>
             </div>
             <div class="menu-gap"></div>

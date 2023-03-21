@@ -100,7 +100,7 @@
                                                         </span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td class="text-center">
+                                                <td>
                                                     <button class="btn btn-sm btn-soft-dark show-reason" data-reason="<?= $cuti['cuti_reason'] ?>" data-bs-toggle="modal" data-bs-target="#modal-show" type="button">
                                                         <span class="fs-8">
                                                             <span class="icon fs-8">
@@ -109,6 +109,16 @@
                                                             <span>Lihat</span>
                                                         </span>
                                                     </button>
+                                                    <?php if($cuti['cuti_file_letter'] !== null):?>
+                                                        <button class="btn btn-sm btn-soft-dark show-letter" data-letter="<?= base_url('public/image/letter/') ?><?= $cuti['cuti_file_letter'] ?>" data-bs-toggle="modal" data-bs-target="#modal-show-letter" type="button">
+                                                        <span class="fs-8">
+                                                            <span class="icon fs-8">
+                                                                <i class="icon dripicons-preview"></i>
+                                                            </span>
+                                                            <span>Lihat Surat</span>
+                                                        </span>
+                                                    </button>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <?php 
                                                 $disable = $cuti['cuti_status'] != 'P' ? 'disabled': '';
@@ -160,7 +170,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="tambah-cuti" class="form-floating" action="<?= base_url('cuti/add_cuti')?>" method="POST">
+            <form id="tambah-cuti" class="form-floating" action="<?= base_url('cuti/add_cuti')?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div id="errors" style="display: none;"></div>
                     <div class="row g-2">
@@ -188,6 +198,9 @@
                                 <option value="2" >Cuti Izin / Penting</option>
                                 <option value="3" >Cuti Tahunan</option>
                             </select>
+                        </div>
+                        <div id="upload-surat" class="col-12">
+                            
                         </div>
                         <div class="col-6">
                             <label for="end-date" class="fs-8 mb-1">Mulai Cuti
@@ -224,7 +237,7 @@
                             <p class="fs-8">Catatan :</p>
                             <p class="fs-8 mb-1">- Jika cuti tgl sekarang ingin ambil cuti 1 hari berarti <strong>( tgl sekarang + tgl besok )</strong>, 
                             Dan tgl besok atau atau tgl berakhir berarti anda diwajibkan masuk.</p>
-                            <p class="fs-8">- Untuk cuti sakit (surat) karyawan wajib membawa surat sakit ketika mulai kerja kembali dan cuti sakit (surat) tidak akan mengurangi sisa cuti anda.</p>
+                            <p class="fs-8">- Untuk cuti sakit (surat) karyawan wajib upload surat keterangan dokter dan cuti sakit (surat) tidak akan mengurangi sisa cuti anda.</p>
                         </div>
                         <div class="col-12 mt-3">
                             <div class="form-floating">
@@ -359,6 +372,14 @@
         </div>
     </div>
 </div>
+<!-- Modal Show image -->
+<div class="modal fade" id="modal-show-letter" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <img src="" alt="surat">
+        </div>
+    </div>
+</div>
 
     <!-- Data Table JS -->
 <script src="<?= base_url()?>public/assets/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -399,11 +420,33 @@
             }
         });
 
+        $('select[name="cuti"]').change(function (e) { 
+            e.preventDefault();
+            if (this.value == 4) {
+                $('#upload-surat').html(`
+                <label for="cuti" class="fs-8 mb-1">Upload Surat | JPG, PNG, JPEG | Max : 500Kb
+                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
+                </label>
+                <input class="form-control" type="file" name="image" accept="image/png, image/jpg">
+                `)
+            } else {
+                $('#upload-surat').html('')
+            }
+        });
+
         $(document).on('click', '.show-reason', function(e){
             e.preventDefault()
             const reason = $(this).data('reason')
 
             $('#modal-show .modal-body #cuti-reason').html(reason)
+            
+        })
+
+        $(document).on('click', '.show-letter', function(e){
+            e.preventDefault()
+            const letter = $(this).data('letter')
+
+            $('#modal-show-letter img').attr('src', letter)
             
         })
 
@@ -476,13 +519,29 @@
         $(document).on('submit', '#tambah-cuti', function(e){
             e.preventDefault()
             const url = $(this).attr('action');
-            // console.log(url)
+            var data;
+
+            if ($('input[name="image"]').val()) {
+                data = new FormData();
+                $(this).serializeArray().forEach(function(e) {
+                    data.append(e.name, e.value)
+                })
+                data.append( 'image', $('input[name="image"]')[0].files[0]);
+
+            } else {
+                data = new FormData(this)
+            }
+            // for (const j of data.entries()) {
+            //     console.log(j)
+            // }
             $.ajax({
                 type: "POST",
                 url: url, 
-                data: $(this).serialize(),
+                data: data,
                 dataType: "json",  
                 cache: false,
+                contentType: false,
+                processData: false,
                 success: function(response){
                     if (response.success) {
                         sweatalert_confirm('success', response)
@@ -548,7 +607,7 @@
         const countDay = function(){
             let startDate = new Date($('#start-date').val())
             let endDate = new Date($('#end-date').val())
-            let result;
+            let result = 1
 
             $('#start-date').change(function (e) { 
                 e.preventDefault();
@@ -563,6 +622,7 @@
                 result = getBusinessDatesCount(startDate, endDate)
                 $('#hari').text(result)
             });
+            $('#hari').text(result)
         }
         countDay()
 
@@ -573,7 +633,7 @@
         }
 
         const getBusinessDatesCount = function(startDate, endDate) {
-            var count = -1;
+            var count = 0;
             var curDate = startDate;
             while (curDate <= endDate) {
                 var dayOfWeek = curDate.getDay();

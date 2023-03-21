@@ -33,7 +33,7 @@ class Calendar extends CI_Controller {
                             ->get()
                             ->result_array();
 
-        $cuti = $this->db->select("c.employee_id, c.cuti_type, c.start_date, c.end_date, c.cuti_status, e.full_name, e.image_profile")
+        $cuti = $this->db->select("c.employee_id, c.cuti_type, c.start_date, DATE_ADD(c.end_date, INTERVAL 1 DAY) as end_date, c.cuti_status, e.full_name, e.image_profile")
                             ->from('cuti as c')
                             ->join('employee as e', 'c.employee_id = e.employee_id')
                             ->where("(c.cuti_status='A' OR c.cuti_status='AC')", null)
