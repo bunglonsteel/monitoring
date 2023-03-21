@@ -2,5 +2,4 @@ composer.json
 readme.rst
 license.txt
 application/config/database.php
-public/image/notes
-public/image/users
+public/image
