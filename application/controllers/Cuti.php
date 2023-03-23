@@ -316,6 +316,47 @@ class Cuti extends CI_Controller {
         }
     }
 
+    public function delete_cuti($cuti_id = ''){
+        if ($this->session->userdata('role_id') != 1) {
+            redirect('blocked');
+        }
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $check = $this->Cuti_model->get_cuti_by_id(strip_tags(htmlspecialchars($cuti_id)));
+            if (!$check) {
+                $message = [
+                    'error' => 'true',
+                    'title' => 'Gagal!',
+                    'desc' => 'Mohon maaf cuti tidak ditemukan atau tidak ada.',
+                    'buttontext' => 'Oke, terimakasih'
+                ];
+            } else {
+                if ($check['cuti_status'] != "P") {
+                    $message = [
+                        'error' => 'true',
+                        'title' => 'Mohon Maaf',
+                        'desc' => 'Cuti tidak bisa dihapus, karena cuti anda telah di verifikasi.',
+                        'buttontext' => 'Oke, terimakasih'
+                    ];
+                } else {
+                    if ($check['cuti_type'] == "CSS" && $check['cuti_file_letter'] != null) {
+                        unlink(FCPATH . 'public/image/letter/' . $check['cuti_file_letter']);
+                    }
+                    $this->Cuti_model->delete_cuti($cuti_id);
+                    $message = [
+                        'success' => 'true',
+                        'title' => 'Berhasil',
+                        'desc' => 'Cuti berhasil dihapus.',
+                        'buttontext' => 'Oke, terimakasih'
+                    ];
+                }
+            }
+
+            echo json_encode($message);
+        }
+    }
+
     function select_check($str){
         if ($str == '0'){
             $this->form_validation->set_message('select_check', 'The {field} field is required.');

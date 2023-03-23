@@ -38,9 +38,7 @@
                                             <th>Jml Hari</th>
                                             <th>Status</th>
                                             <th>Alasan</th>
-                                            <?php if($this->session->userdata('role_id') == 2 ) :?>
-                                                <th>Action</th>
-                                            <?php endif; ?>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -143,6 +141,22 @@
                                                         </span>
                                                     </button>
                                                 </td>
+                                                <?php endif; ?>
+                                                <?php if($this->session->userdata('role_id') == 1 ) :?>
+                                                    <td class="text-center">
+                                                        <?php if($cuti['cuti_status'] == "P" ) :?>
+                                                            <button class="btn btn-sm btn-soft-danger remove" type="button" data-cutiid="<?= $cuti['cuti_id'] ?>">
+                                                                <span class="fs-8">
+                                                                    <span class="icon fs-8">
+                                                                        <i class="icon dripicons-trash"></i>
+                                                                    </span>
+                                                                    <span>Hapus</span>
+                                                                </span>
+                                                            </button>
+                                                        <?php else : ?>
+                                                            -
+                                                        <?php endif; ?>
+                                                    </td>
                                                 <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
@@ -684,4 +698,102 @@
         }
     });
 
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '.remove', function () {
+            const csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+            const csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+            const target = $(this).data('cutiid')
+
+            Swal.fire({
+                html:
+                `<div class="avatar avatar-icon avatar-soft-danger mb-3">
+                    <span class="initial-wrap rounded-8">
+                        <i class="icon dripicons-trash" style="line-height:0;"></i>
+                    </span>
+                </div>
+                <div>
+                    <h5 class="text-dark">Hapus</h5>
+                    <p class="fs-7 mt-2">Anda yakin ingin menghapus ini?</p>
+                </div>`,
+                customClass: {
+                    content: 'p-3 text-center',
+                    confirmButton: 'btn btn-danger fs-7',
+                    actions: 'justify-content-center mt-1 p-0',
+                    cancelButton:'btn btn-soft-dark fs-7 me-2'
+                },
+                width: 300,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Tutup',
+                reverseButtons:true,
+                showCancelButton: true,
+                buttonsStyling: false,
+            }).then((r)=>{
+                if(r.value){
+                    $.ajax({
+                        type: "POST",
+                        url: '<?= base_url('cuti/delete_cuti/') ?>' + target, 
+                        data: {[csrfName] : csrfHash},
+                        dataType: "json",  
+                        cache: false,
+                        success: function(response){
+                            if (response.error) {
+                                sweatalert_confirm('danger', response)
+                            }
+                            if (response.success) {
+                                sweatalert_confirm('success', response)
+                            }
+                        },
+                        error : function(xhr, status, errorThrown){
+                            console.log(xhr.responseText)
+                            console.log(status)
+                            console.log(errorThrown)
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    const sweatalert_confirm = function(type, res){
+        let icon;
+        let classHeader;
+        if (type == 'success') {
+            icon = '😍';
+            classHeader = 'avatar-soft-success';
+        } else if(type == 'danger'){
+            icon = '😣';
+            classHeader = 'avatar-soft-danger';
+        } else if(type == 'warning'){
+            icon = '🧐';
+            classHeader = 'avatar-soft-warning';
+        }
+
+        Swal.fire({
+            html:
+            `<div class="avatar avatar-icon ${classHeader}  mb-3">
+                <span class="initial-wrap rounded-8">
+                    ${icon}
+                </span>
+            </div>
+            <div>
+                <h5 class="text-dark">${res.title}</h5>
+                <p class="fs-7 mt-2">${res.desc}</p>
+            </div>`,
+            customClass: {
+                content: 'p-3 text-center',
+                confirmButton: 'btn btn-primary fs-7',
+                actions: 'justify-content-center mt-1',
+            },
+            width: 300,
+            confirmButtonText: res.buttontext,
+            buttonsStyling: false,
+        }).then((r) => {
+            setTimeout(() => {
+                location.reload()
+            }, 10);
+        })
+    }
 </script>

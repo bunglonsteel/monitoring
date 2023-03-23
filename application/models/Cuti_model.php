@@ -38,5 +38,8 @@ class Cuti_model extends CI_Model {
                 ->where('cuti_id', $cuti_id)
                 ->update('cuti');
     }
+    public function delete_cuti($cuti_id){
+        $this->db->delete('cuti', ['cuti_id' => $cuti_id]);
+    }
 
 }
