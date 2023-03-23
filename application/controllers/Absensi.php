@@ -117,7 +117,7 @@ class Absensi extends CI_Controller {
                             $message = [
                                 'error' => 'true',
                                 'title' => 'Peringatan!',
-                                'desc' => 'Maaf anda belum bisa keluar hari ini, aturan 8 jam per hari. Sisa waktu '. $jam . ' Jam ' .floor($menit/60). ' Menit.' ,
+                                'desc' => 'Maaf anda belum bisa keluar hari ini, aturan 8 jam dibulan ramadhan. Sisa waktu '. $jam . ' Jam ' .floor($menit/60). ' Menit.' ,
                                 'buttontext' => 'Oke, tutup'
                             ];
                         } else {
