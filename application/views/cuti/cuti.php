@@ -107,7 +107,7 @@
                                                             <span>Lihat</span>
                                                         </span>
                                                     </button>
-                                                    <?php if($cuti['cuti_file_letter'] !== null):?>
+                                                    <?php if($cuti['cuti_type'] == "CSS" && $cuti['cuti_file_letter'] !== null):?>
                                                         <button class="btn btn-sm btn-soft-dark show-letter" data-letter="<?= base_url('public/image/letter/') ?><?= $cuti['cuti_file_letter'] ?>" data-bs-toggle="modal" data-bs-target="#modal-show-letter" type="button">
                                                         <span class="fs-8">
                                                             <span class="icon fs-8">
@@ -116,6 +116,10 @@
                                                             <span>Lihat Surat</span>
                                                         </span>
                                                     </button>
+                                                    <?php elseif($cuti['cuti_type'] == "CSS" && $cuti['cuti_file_letter'] === null) : ?>
+                                                        <span class="badge badge-soft-warning">
+                                                            Belum upload
+                                                        </span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <?php 
@@ -144,6 +148,16 @@
                                                 <?php endif; ?>
                                                 <?php if($this->session->userdata('role_id') == 1 ) :?>
                                                     <td class="text-center">
+                                                        <?php if($cuti["cuti_type"] == "CSS"): ?>
+                                                            <button class="btn btn-sm btn-soft-primary upload-letter" type="button" data-cutiid="<?= $cuti['cuti_id'] ?>" data-bs-toggle="modal" data-bs-target="#modal-upload">
+                                                                <span class="fs-8">
+                                                                    <span class="icon fs-8">
+                                                                        <i class="icon dripicons-upload"></i>
+                                                                    </span>
+                                                                    <span>Upload Surat</span>
+                                                                </span>
+                                                            </button>
+                                                        <?php endif;?>
                                                         <?php if($cuti['cuti_status'] == "P" ) :?>
                                                             <button class="btn btn-sm btn-soft-danger remove" type="button" data-cutiid="<?= $cuti['cuti_id'] ?>">
                                                                 <span class="fs-8">
@@ -153,7 +167,8 @@
                                                                     <span>Hapus</span>
                                                                 </span>
                                                             </button>
-                                                        <?php else : ?>
+                                                        <?php endif; ?>
+                                                        <?php if($cuti['cuti_status'] != "P" && $cuti['cuti_type'] != "CSS") : ?>
                                                             -
                                                         <?php endif; ?>
                                                     </td>
@@ -249,8 +264,8 @@
                         </div>
                         <div class="col-12">
                             <p class="fs-8">Catatan baru :</p>
-                            <p class="fs-8 mb-1">- Jika ingin ambil cuti 1 hari <strong>( Tgl Mulai & Berakhir Cuti )</strong> masih di tanggal yang sama, Dan tanggal selanjutnya anda diwajibkan masuk.</p>
-                            <p class="fs-8">- Untuk cuti sakit (surat) karyawan wajib upload surat keterangan dokter dan cuti sakit (surat) tidak akan mengurangi sisa cuti anda.</p>
+                            <p class="fs-8 mb-1">- Jika ingin ambil cuti 1 hari <strong>(Tgl Mulai & Berakhir Cuti)</strong> masih di tanggal yang sama, Dan tanggal selanjutnya anda diwajibkan masuk.</p>
+                            <p class="fs-8">- Untuk cuti sakit (surat) karyawan wajib upload surat keterangan dokter, upload surat bisa dilakukan kapan saja, mau itu saat pengajuan ataupun setelah sembuh, anda bisa upload surat saat pengajuan atau terdapat dibagian <strong>kolom (action)</strong> setelah anda mengajukan cuti dan cuti sakit (surat) tidak akan mengurangi sisa cuti anda.</p>
                         </div>
                         <div class="col-12 mt-3">
                             <div class="form-floating">
@@ -366,6 +381,32 @@
 </div>
 <?php endif; ?>
 
+<!-- Modal upload -->
+<div class="modal fade" id="modal-upload" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <form id="upload-letter" class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Upload Surat</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="errors-u" style="display: none;"></div>
+                <label class="fs-8 mb-1">Allow : JPG, PNG, JPEG | Max : 500Kb
+                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
+                </label>
+                <input class="form-control" type="file" name="image_letter" accept="image/png, image/jpg, image/jpeg">
+            </div>
+            <div class="modal-footer p-2" style="border-top: none ;">
+                <input id="target" type="hidden">
+                <input id="csrf-u" type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
+                <button type="button" class="btn btn-soft-dark fs-7" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary fs-7">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Modal Show Reason -->
 <div class="modal fade" id="modal-show" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
@@ -437,9 +478,7 @@
             e.preventDefault();
             if (this.value == 4) {
                 $('#upload-surat').html(`
-                <label for="cuti" class="fs-8 mb-1">Upload Surat | JPG, PNG, JPEG | Max : 500Kb
-                    <span class="badge badge-danger mb-1 badge-indicator-processing badge-indicator"></span>
-                </label>
+                <label for="cuti" class="fs-8 mb-1">Upload Surat | JPG, PNG, JPEG | Max : 500Kb </label>
                 <input class="form-control" type="file" name="image" accept="image/png, image/jpg">
                 `)
             } else {
@@ -500,6 +539,13 @@
                     format: 'YYYY-MM-DD'
                 }
             });
+        })
+
+        $(document).on('click', '.upload-letter', function(e){
+            e.preventDefault()
+            const cutiId = $(this).data('cutiid')
+            $('#modal-upload #target').val(cutiId)
+
         })
 
         $(document).on('click', '.btn-status', function(e){
@@ -581,6 +627,52 @@
             });
             return false;
         });
+        
+        $(document).on('submit', '#upload-letter', function(e){
+            e.preventDefault()
+            const url = '<?= base_url('cuti/upload_letter/') ?>';
+            const data = new FormData();
+            $(this).serializeArray().forEach(function(e) {
+                data.append(e.name, e.value)
+            })
+            data.append( 'image', $('input[name="image_letter"]')[0].files[0]);
+            // for (const j of data.entries()) {
+            //     console.log(j)
+            // }
+            $.ajax({
+                type: "POST",
+                url: url + $('#target').val(), 
+                data: data,
+                dataType: "json",  
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if (response.success) {
+                        sweatalert_confirm('success', response)
+                    }
+
+                    if (response.errors) {
+                        $('#errors-u').html(response.desc).show()
+                        $('#csrf-u').val(response.csrfHash)
+                    }
+
+                    if (response.error) {
+                        sweatalert_confirm('danger', response)
+                    }
+
+                    if (response.warning) {
+                        sweatalert_confirm('warning', response)
+                    }
+                },
+                error : function(xhr, status, errorThrown){
+                    console.log(xhr.responseText)
+                    console.log(status)
+                    console.log(errorThrown)
+                }
+            });
+            return false;
+        });
 
         $(document).on('submit', '#edit-cuti', function(e){
             e.preventDefault()
@@ -617,28 +709,6 @@
             return false;
         })
 
-        const countDay = function(){
-            let startDate = new Date($('#start-date').val())
-            let endDate = new Date($('#end-date').val())
-            let result = 1
-
-            $('#start-date').change(function (e) { 
-                e.preventDefault();
-                startDate = new Date($('#start-date').val())
-                result = getBusinessDatesCount(startDate, endDate)
-                $('#hari').text(result)
-            });
-            
-            $('#end-date').change(function (e) { 
-                e.preventDefault();
-                endDate = new Date($('#end-date').val())
-                result = getBusinessDatesCount(startDate, endDate)
-                $('#hari').text(result)
-            });
-            $('#hari').text(result)
-        }
-        countDay()
-
         Date.prototype.addDays = function( days ) {
             var date = new Date(this.valueOf())
             date.setDate(date.getDate() + days);
@@ -656,6 +726,28 @@
             }
             return count;
         }
+
+        const countDay = function(){
+            let startDate = new Date($('#start-date').val())
+            let endDate = new Date($('#end-date').val())
+            let result = getBusinessDatesCount(startDate, endDate)
+
+            $('#start-date').change(function (e) { 
+                e.preventDefault();
+                startDate = new Date($('#start-date').val())
+                result = getBusinessDatesCount(startDate, endDate)
+                $('#hari').text(result)
+            });
+            
+            $('#end-date').change(function (e) { 
+                e.preventDefault();
+                endDate = new Date($('#end-date').val())
+                result = getBusinessDatesCount(startDate, endDate)
+                $('#hari').text(result)
+            });
+            $('#hari').text(result)
+        }
+        countDay()
 
         const sweatalert_confirm = function(type, res){
             let icon;

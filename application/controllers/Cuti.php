@@ -108,23 +108,8 @@ class Cuti extends CI_Controller {
                         ];
 
                         if ($cuti_type == 4) {
-                            $config['allowed_types']    = 'jpg|png|jpeg';
-                            $config['max_size']         = '500';
-                            $config['upload_path']      = './public/image/letter';
-                            $config['file_ext_tolower'] = TRUE;
-                            $config['encrypt_name']     = TRUE;
-                            $this->load->library('upload', $config);
-                            if (!$this->upload->do_upload('image')) {
-                                $message = [
-                                    'errors' => 'true',
-                                    'desc' => $this->upload->display_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
-                                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
-                                    'csrfHash' => $this->security->get_csrf_hash(),
-                                ];
-                                echo json_encode($message);die;
-                            } else {
-                                $new_image = $this->upload->data('file_name');
-                                $data['cuti_file_letter'] = $new_image;
+                            if ($_FILES['image']['name']) {
+                                $data['cuti_file_letter'] = $this->upload_letter('', TRUE);
                             }
                         }
                         $message = [
@@ -142,6 +127,57 @@ class Cuti extends CI_Controller {
                 }
             }
             echo json_encode($message);
+        }
+    }
+
+    public function upload_letter(String $cuti_id = '', Bool $return = false){
+        if ($this->session->userdata('role_id') != 1) {
+            redirect('blocked');
+        }
+        $config['allowed_types']    = 'jpg|png|jpeg';
+        $config['max_size']         = '500';
+        $config['upload_path']      = './public/image/letter';
+        $config['file_ext_tolower'] = TRUE;
+        $config['encrypt_name']     = TRUE;
+        $this->load->library('upload', $config);
+        if (!$this->upload->do_upload('image')) {
+            $message = [
+                'errors' => 'true',
+                'desc' => $this->upload->display_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
+                'csrfHash' => $this->security->get_csrf_hash(),
+            ];
+            echo json_encode($message);die;
+        } else {
+            if ($return) {
+                return $this->upload->data('file_name');
+            } else {
+                $check = $this->Cuti_model->get_cuti_by_id($cuti_id);
+                if (!$check) {
+                    $message = [
+                        'error' => 'true',
+                        'title' => 'Gagal!',
+                        'desc' => 'Mohon maaf cuti tidak ditemukan.',
+                        'buttontext' => 'Oke, terimakasih'
+                    ];
+                } else {
+                    if ($check['cuti_file_letter'] !== NULL) {
+                        unlink(FCPATH . 'public/image/letter/' . $check['cuti_file_letter']);
+                    }
+                    $data_cuti = [
+                        'cuti_file_letter' => $this->upload->data('file_name'),
+                    ];
+                    $this->Cuti_model->update_cuti($cuti_id, $data_cuti);
+                    $message = [
+                        'success'    => 'true',
+                        'title'      => 'Berhasil!',
+                        'desc'       => 'Upload cuti surat berhasil diupload',
+                        'buttontext' => 'Oke, terimakasih'
+                    ];
+                }
+
+                echo json_encode($message);
+            }
         }
     }
 
@@ -366,7 +402,9 @@ class Cuti extends CI_Controller {
     }
 
     function select_date($date){
-        if ($date <= date('Y-m-d', strtotime('-1 day', strtotime(date('Y-m-d'))))){
+        if ($this->input->post('cuti') == 4) {
+            return TRUE;
+        } elseif ($date <= date('Y-m-d', strtotime('-1 day', strtotime(date('Y-m-d'))))){
             $this->form_validation->set_message('select_date', 'The {field} cannot be less than the current date.');
             return FALSE;
         }
