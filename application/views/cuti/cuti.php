@@ -458,8 +458,6 @@
         
         
         $('#table-cuti').DataTable({
-            // pageLength: 1,
-            order: [[7, 'DESC']],
             scrollX:  true,
             language: { search: "",
                 searchPlaceholder: "Search",
@@ -555,23 +553,51 @@
             const csrfName = '<?= $this->security->get_csrf_token_name()?>'
             const csrfHash = '<?= $this->security->get_csrf_hash()?>'
             // console.log(url)
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {[csrfName]:csrfHash},
-                dataType: "json",  
-                cache: false,
-                success: function(response){
-                    if (response.success) {
-                        sweatalert_confirm('success', response)
-                    }
+
+            Swal.fire({
+                html:
+                `<div class="avatar avatar-icon avatar-soft-warning mb-3">
+                    <span class="initial-wrap rounded-8">
+                        <i class="icon dripicons-information" style="line-height:0;"></i>
+                    </span>
+                </div>
+                <div>
+                    <h5 class="text-dark">Konfirmasi</h5>
+                    <p class="fs-7 mt-2">Anda yakin ingin memverifikasi karyawan ini?</p>
+                </div>`,
+                customClass: {
+                    content: 'p-3 text-center',
+                    confirmButton: 'btn btn-primary fs-7',
+                    actions: 'justify-content-center mt-1 p-0',
+                    cancelButton:'btn btn-soft-dark fs-7 me-2'
                 },
-                error : function(xhr, status, errorThrown){
-                    console.log(xhr.responseText)
-                    console.log(status)
-                    console.log(errorThrown)
+                width: 300,
+                confirmButtonText: 'Ya, Konfimasi',
+                cancelButtonText: 'Tutup',
+                reverseButtons:true,
+                showCancelButton: true,
+                buttonsStyling: false,
+            }).then((r)=>{
+                if(r.value){
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {[csrfName]:csrfHash},
+                        dataType: "json",  
+                        cache: false,
+                        success: function(response){
+                            if (response.success) {
+                                sweatalert_confirm('success', response)
+                            }
+                        },
+                        error : function(xhr, status, errorThrown){
+                            console.log(xhr.responseText)
+                            console.log(status)
+                            console.log(errorThrown)
+                        }
+                    });
                 }
-            });
+            })
             return false;
         })
 
