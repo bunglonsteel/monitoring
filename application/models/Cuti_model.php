@@ -8,12 +8,11 @@ class Cuti_model extends CI_Model {
     public function get_cuti($employee_id = ''){
         $this->db->select('cuti.*, e.employee_id , e.image_profile , e.full_name, e.remaining_days_off as total_day')
                 ->from('cuti')
-                ->join('employee as e', 'e.employee_id = cuti.employee_id')
-                ->order_by('cuti_id', 'DESC');
-
+                ->join('employee as e', 'e.employee_id = cuti.employee_id');
         if ($employee_id != '') {
             $this->db->where('cuti.employee_id', $employee_id);
         }
+        $this->db->order_by('cuti_id', 'DESC');
         return $this->db->get()->result_array();
     }
 

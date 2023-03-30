@@ -30,6 +30,7 @@
                                 <table id="table-cuti" class="table nowrap w-100">
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>Nama lengkap</th>
                                             <th>Kategori Cuti</th>
                                             <th>Tgl Pengajuan</th>
@@ -42,8 +43,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($list_cuti as $cuti) :?>
+                                        <?php 
+                                        $no = 1;
+                                        foreach($list_cuti as $cuti) :?>
                                             <tr class="fs-7">
+                                                <td scope="row"><?= $no++ ?></td>
                                                 <td>
                                                     <div class="media align-items-center">
                                                         <div class="media-head me-2">
