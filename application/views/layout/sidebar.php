@@ -4,18 +4,13 @@
     <div class="menu-header">
         <span>
             <a class="navbar-brand" href="<?= base_url() ?>">
-                <img class="brand-img img-fluid rounded" src="<?= base_url() ?>public/image/default/<?= $settings['logo']?>" alt="brand"
-                    style="max-height: 35px;" />
-                <img class="brand-img img-fluid" src="<?= base_url() ?>public/image/default/<?= $settings['logo_text']?>" alt="brand"
-                    style="max-height: 15px;" />
+                <img class="brand-img img-fluid rounded" src="<?= base_url() ?>public/image/default/<?= $settings['logo'] ?>" alt="brand" style="max-height: 35px;" />
+                <img class="brand-img img-fluid" src="<?= base_url() ?>public/image/default/<?= $settings['logo_text'] ?>" alt="brand" style="max-height: 15px;" />
             </a>
             <button class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover navbar-toggle">
                 <span class="icon">
                     <span class="svg-icon fs-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24"
-                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-bar-to-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <line x1="10" y1="12" x2="20" y2="12"></line>
                             <line x1="10" y1="12" x2="14" y2="16"></line>
@@ -34,14 +29,11 @@
         <div class="menu-content-wrap">
             <div class="menu-group">
                 <ul class="navbar-nav flex-column">
-                    <li class="nav-item <?php if($this->uri->segment(1) == 'dashboard') : ?> active <?php endif;?>">
+                    <li class="nav-item <?php if ($this->uri->segment(1) == 'dashboard') : ?> active <?php endif; ?>">
                         <a class="nav-link" href="<?= base_url('dashboard') ?>">
                             <span class="nav-icon-wrap">
                                 <span class="svg-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="icon icon-tabler icon-tabler-template" width="24" height="24"
-                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                        stroke-linecap="round" stroke-linejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-template" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <rect x="4" y="4" width="16" height="4" rx="1" />
                                         <rect x="4" y="12" width="6" height="8" rx="1" />
@@ -54,7 +46,7 @@
                             <span class="nav-link-text">Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item <?php if($this->uri->segment(1) == 'calendar') : ?> active <?php endif;?>">
+                    <li class="nav-item <?php if ($this->uri->segment(1) == 'calendar') : ?> active <?php endif; ?>">
                         <a class="nav-link" href="<?= base_url('calendar') ?>">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
@@ -73,8 +65,7 @@
                 </div>
                 <ul class="navbar-nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#absensi">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#absensi">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
                                     <i class="form-icon" data-feather="clock"></i>
@@ -85,26 +76,25 @@
                         <ul id="absensi" class="nav flex-column collapse  nav-children">
                             <li class="nav-item">
                                 <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'absensi') : ?> active <?php endif;?>">
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'absensi') : ?> active <?php endif; ?>">
                                         <a class="nav-link" href="<?= base_url('absensi') ?>">
                                             <span class="nav-link-text">Kehadiran / absensi</span>
                                         </a>
                                     </li>
-                                    <?php if($this->session->userdata('role_id') == 2) : ?>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'laporan') : ?> active <?php endif;?>">
+                                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'laporan') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('laporan') ?>">
                                                 <span class="nav-link-text">Laporan Absensi</span>
                                             </a>
                                         </li>
-                                    <?php endif;?>
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         </ul>
                     </li>
-                    <?php if($this->session->userdata('role_id') == 2) : ?>
+                    <?php if ($this->session->userdata('role_id') == 2) : ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                data-bs-target="#karyawan">
+                            <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#karyawan">
                                 <span class="nav-icon-wrap">
                                     <span class="feather-icon">
                                         <i class="form-icon" data-feather="users"></i>
@@ -115,12 +105,12 @@
                             <ul id="karyawan" class="nav flex-column collapse  nav-children">
                                 <li class="nav-item">
                                     <ul class="nav flex-column">
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'employee') : ?> active <?php endif;?>">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'employee') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('employee') ?>">
                                                 <span class="nav-link-text">Semua Karyawan</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'department') : ?> active <?php endif;?>">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'department') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('department') ?>">
                                                 <span class="nav-link-text">Department</span>
                                             </a>
@@ -129,25 +119,9 @@
                                 </li>
                             </ul>
                         </li>
-                    <?php endif;?>
-
-                    <li class="nav-item <?php if($this->uri->segment(1) == 'cuti') : ?> active <?php endif;?>">
-                        <a class="nav-link" href="<?= base_url('cuti') ?>">
-                            <span class="nav-icon-wrap">
-                                <span class="feather-icon">
-                                    <i data-feather="send"></i>
-                                </span>
-                            </span>
-                            <span class="nav-link-text">Cuti</span>
-                            <?php if($this->session->userdata('role_id') == 2) : ?>
-                                <span class="badge badge-primary ms-auto"><?= $count_pending ?></span>
-                            <?php endif; ?>
-                        </a>
-                    </li>
-
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#project">
+                    <?php endif; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#jobs">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
                                     <i class="form-icon" data-feather="layers"></i>
@@ -155,26 +129,48 @@
                             </span>
                             <span class="nav-link-text">Pekerjaan</span>
                         </a>
-                        <ul id="project" class="nav flex-column collapse  nav-children">
+                        <ul id="jobs" class="nav flex-column collapse nav-children">
                             <li class="nav-item">
                                 <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'project') : ?> active <?php endif;?>">
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'project') : ?> active <?php endif; ?>">
                                         <a class="nav-link" href="<?= base_url('project') ?>">
-                                            <span class="nav-link-text">Project</span>
+                                            <span class="nav-link-text">Pekerjaan</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'task') : ?> active <?php endif;?>">
-                                        <a class="nav-link" href="<?= base_url('task') ?>">
+                                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'tasks') : ?> active <?php endif; ?>">
+                                        <a class="nav-link" href="<?= base_url('tasks') ?>">
                                             <span class="nav-link-text">Tugas</span>
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'task-categories') : ?> active <?php endif; ?>">
+                                        <a class="nav-link" href="<?= base_url('task-categories') ?>">
+                                            <span class="nav-link-text">Tugas Kategori</span>
+                                        </a>
+                                    </li>
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         </ul>
-                    </li> -->
+                    </li>
+
+                    <li class="nav-item <?php if ($this->uri->segment(1) == 'cuti') : ?> active <?php endif; ?>">
+                        <a class="nav-link" href="<?= base_url('cuti') ?>">
+                            <span class="nav-icon-wrap">
+                                <span class="feather-icon">
+                                    <i data-feather="send"></i>
+                                </span>
+                            </span>
+                            <span class="nav-link-text">Cuti</span>
+                            <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                <span class="badge badge-primary ms-auto"><?= $count_pending ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#cleanliness">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#cleanliness">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
                                     <i class="form-icon" data-feather="trash"></i>
@@ -185,28 +181,28 @@
                         <ul id="cleanliness" class="nav flex-column collapse  nav-children">
                             <li class="nav-item">
                                 <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness-progress') : ?> active <?php endif;?>">
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'cleanliness-progress') : ?> active <?php endif; ?>">
                                         <a class="nav-link" href="<?= base_url('cleanliness-progress') ?>">
                                             <span class="nav-link-text">Progress Kebersihan</span>
                                         </a>
                                     </li>
-                                    <?php if($this->session->userdata('role_id') == 2) : ?>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'cleanliness') : ?> active <?php endif;?>">
+                                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'cleanliness') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('cleanliness') ?>">
                                                 <span class="nav-link-text">Semua Kebersihan</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'laporan-kebersihan') : ?> active <?php endif;?>">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'laporan-kebersihan') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('laporan-kebersihan') ?>">
                                                 <span class="nav-link-text">Laporan Kebersihan</span>
                                             </a>
                                         </li>
-                                    <?php endif;?>
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         </ul>
                     </li>
-                    
+
                 </ul>
             </div>
 
@@ -216,7 +212,7 @@
                     <span>Lainnya</span>
                 </div>
                 <ul class="navbar-nav flex-column">
-                    <li class="nav-item <?php if($this->uri->segment(1) == 'events') : ?> active <?php endif;?>">
+                    <li class="nav-item <?php if ($this->uri->segment(1) == 'events') : ?> active <?php endif; ?>">
                         <a class="nav-link" href="<?= base_url('events') ?>">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
@@ -228,8 +224,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                            data-bs-target="#catatan">
+                        <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#catatan">
                             <span class="nav-icon-wrap">
                                 <span class="feather-icon">
                                     <i class="form-icon" data-feather="clipboard"></i>
@@ -240,29 +235,29 @@
                         <ul id="catatan" class="nav flex-column collapse  nav-children">
                             <li class="nav-item">
                                 <ul class="nav flex-column">
-                                    <li class="nav-item <?php if($this->uri->segment(1) == 'notes') : ?> active <?php endif;?>">
+                                    <li class="nav-item <?php if ($this->uri->segment(1) == 'notes') : ?> active <?php endif; ?>">
                                         <a class="nav-link" href="<?= base_url('notes') ?>">
                                             <span class="nav-link-text">Standar pekerjaan</span>
                                         </a>
                                     </li>
-                                    <?php if($this->session->userdata('role_id') == 2) : ?>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'client') : ?> active <?php endif;?>">
+                                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'client') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('client') ?>">
                                                 <span class="nav-link-text">Catatan Client</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'notes-standard') : ?> active <?php endif;?>">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'notes-standard') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('notes-standard') ?>">
                                                 <span class="nav-link-text">Catatan Standard</span>
                                             </a>
                                         </li>
-                                        <li class="nav-item <?php if($this->uri->segment(1) == 'notes-category') : ?> active <?php endif;?>">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'notes-category') : ?> active <?php endif; ?>">
                                             <a class="nav-link" href="<?= base_url('notes-category') ?>">
                                                 <span class="nav-link-text">Catatan Kategori</span>
                                             </a>
                                         </li>
-                                        
-                                    <?php endif;?>
+
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         </ul>
@@ -275,19 +270,19 @@
                     <span>Pengaturan</span>
                 </div>
                 <ul class="navbar-nav flex-column">
-                    <li class="nav-item <?php if($this->uri->segment(1) == 'settings' || $this->uri->segment(1) == 'account') : ?> active <?php endif;?>">
+                    <li class="nav-item <?php if ($this->uri->segment(1) == 'settings' || $this->uri->segment(1) == 'account') : ?> active <?php endif; ?>">
                         <a class="nav-link" href="
-                        <?php if($this->session->userdata('role_id') == 2) : ?>
+                        <?php if ($this->session->userdata('role_id') == 2) : ?>
                                 <?= base_url('settings') ?>">
-                            <?php else : ?>
-                                <?= base_url('account') ?>">
-                        <?php endif;?>
-                            <span class="nav-icon-wrap">
-                                <span class="feather-icon">
-                                    <i data-feather="settings"></i>
-                                </span>
+                        <?php else : ?>
+                            <?= base_url('account') ?>">
+                        <?php endif; ?>
+                        <span class="nav-icon-wrap">
+                            <span class="feather-icon">
+                                <i data-feather="settings"></i>
                             </span>
-                            <span class="nav-link-text">Pengaturan</span>
+                        </span>
+                        <span class="nav-link-text">Pengaturan</span>
                         </a>
                     </li>
                 </ul>

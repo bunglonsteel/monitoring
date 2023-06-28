@@ -172,6 +172,38 @@ class Settings extends CI_Controller {
         }
     }
 
+    public function update_whatsapp(){
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'trim|required');
+            $this->form_validation->set_rules('token_api', 'Token API', 'trim|required');
+
+            $no_tlp    = $this->input->post('no_wa', TRUE);
+            $token_api = $this->input->post('token_api', TRUE);
+
+            if ($this->form_validation->run() == false) {
+                $output = [
+                    'errors'    => 'true',
+                    'message'   => validation_errors(
+                        '<div class="alert alert-danger alert-dismissible fs-8 py-2_5" role="alert">',
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>'
+                    ),
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+                $this->Settings_model->update_settings(['whatsapp_api' => $token_api]);
+                $output = [
+                    'success'   => true,
+                    'message'   => 'Token API berhasil diperbarui, terimakasih.',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            }
+            echo json_encode($output);
+        }
+    }
+
     private function _uploaded($field = [], $do_upload='', $old_image='',  $default=''){
 
         if ($do_upload != '') {

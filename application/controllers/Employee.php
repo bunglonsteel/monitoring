@@ -1,21 +1,21 @@
 <?php
 
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Employee extends CI_Controller {
+class Employee extends CI_Controller
+{
 
     public function __construct()
-        {
-            parent::__construct();
-            check_login();
-            check_user_acces();
-            $this->load->model('Employee_model');
-            $this->load->model('Settings_model');
-            $this->load->model('Department_model');
-            $this->load->model('Users_model');
-            
-        }
+    {
+        parent::__construct();
+        check_login();
+        check_user_acces();
+        $this->load->model('Employee_model');
+        $this->load->model('Settings_model');
+        $this->load->model('Department_model');
+        $this->load->model('Users_model');
+    }
 
     public function index()
     {
@@ -38,7 +38,8 @@ class Employee extends CI_Controller {
         render_template('admin/employee', $data);
     }
 
-    public function add_employee(){
+    public function add_employee()
+    {
         $this->form_validation->set_rules('fullname', 'Nama lengkap', 'trim|required');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[users.email]');
         $this->form_validation->set_rules('department', 'Department', 'trim|required|max_length[1]|callback_select_check');
@@ -52,10 +53,11 @@ class Employee extends CI_Controller {
             if ($this->form_validation->run() == false) {
                 $message = [
                     'errors' => 'true',
-                    'desc' => validation_errors('<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'),
+                    'desc' => validation_errors(
+                        '<div class="alert alert-danger alert-dismissible show fade fs-7" role="alert">',
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                    ),
                 ];
-                
             } else {
                 $last_employee = $this->Employee_model->get_last_employee();
 
@@ -66,7 +68,7 @@ class Employee extends CI_Controller {
                 $password   = $this->input->post('newpassword', TRUE);
 
                 $employee = [
-                    'full_name' => htmlspecialchars($fullname) ,
+                    'full_name' => htmlspecialchars($fullname),
                     'department_id' => htmlspecialchars($department),
                     'gender' => htmlspecialchars($gender),
                     'join_date' => date('Y-m-d'),
@@ -98,16 +100,18 @@ class Employee extends CI_Controller {
         }
     }
 
-    function select_check($str){
-        if ($str == '0'){
-                $this->form_validation->set_message('select_check', 'The {field} field is required.');
-                return FALSE;
-        }else{
-                return TRUE;
+    function select_check($str)
+    {
+        if ($str == '0') {
+            $this->form_validation->set_message('select_check', 'The {field} field is required.');
+            return FALSE;
+        } else {
+            return TRUE;
         }
     }
 
-    public function show_profile($employee_id){
+    public function show_profile($employee_id)
+    {
 
         $employee = $this->Employee_model->get_employee_with_user($employee_id);
 
@@ -128,22 +132,23 @@ class Employee extends CI_Controller {
         }
     }
 
-    public function update_pass($user_id){
+    public function update_pass($user_id)
+    {
         $user_employee = $this->Users_model->get_user_by_id($user_id);
 
         if (!$this->input->is_ajax_request()) {
 
             exit('No direct script access allowed');
         } else {
-            
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
-        $password   = $this->input->post('password', TRUE);
+
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
+            $password   = $this->input->post('password', TRUE);
 
             if ($this->form_validation->run() == FALSE) {
                 $message = [
                     'error' => 'true',
                     'title' => 'Gagal!',
-                    'desc' => validation_errors('<p class="fs-7">','</p'),
+                    'desc' => validation_errors('<p class="fs-7">', '</p'),
                     'buttontext' => 'Oke, tutup'
                 ];
             } else {
@@ -162,13 +167,14 @@ class Employee extends CI_Controller {
                     $this->Users_model->update_user($user_id, $data);
                 }
             }
-            
+
 
             echo json_encode($message);
         }
     }
 
-    public function activation($user_id, $is_active){
+    public function activation($user_id, $is_active)
+    {
         check_user_acces();
         $user = $this->Users_model->get_user_by_id($user_id);
 
@@ -203,18 +209,19 @@ class Employee extends CI_Controller {
         }
     }
 
-    public function update_department($employee_id){
+    public function update_department($employee_id)
+    {
         $employee = $this->Employee_model->get_employee_by_id($employee_id);
 
         if (!$this->input->is_ajax_request()) {
 
             exit('No direct script access allowed');
         } else {
-
         }
     }
 
-    public function update_sisa_cuti($employee_id = '', $jumlah_cuti = ''){
+    public function update_sisa_cuti($employee_id = '', $jumlah_cuti = '')
+    {
         if (!$this->input->is_ajax_request()) {
             exit('No direct script access allowed');
         } else {
