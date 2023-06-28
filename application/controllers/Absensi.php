@@ -107,7 +107,7 @@ class Absensi extends CI_Controller {
                             'buttontext' => 'Oke, tutup'
                         ];
                     } else {
-                        $time_to_out = strtotime('+8 hours', strtotime($check_absen['clock_in']));
+                        $time_to_out = strtotime('+9 hours', strtotime($check_absen['clock_in']));
                         if(date('d H:i') <= date('d H:i', $time_to_out) ){
                             $diff = strtotime(date('Y-m-d H:i:s', $time_to_out)) - strtotime(date('Y-m-d H:i:s'));
                             // var_dump($diff, strtotime($check_absen['clock_in']));die;
@@ -117,7 +117,7 @@ class Absensi extends CI_Controller {
                             $message = [
                                 'error' => 'true',
                                 'title' => 'Peringatan!',
-                                'desc' => 'Maaf anda belum bisa keluar hari ini, aturan 8 jam dibulan ramadhan. Sisa waktu '. $jam . ' Jam ' .floor($menit/60). ' Menit.' ,
+                                'desc' => 'Maaf anda belum bisa keluar hari ini, aturan 9 jam. Sisa waktu '. $jam . ' Jam ' .floor($menit/60). ' Menit.' ,
                                 'buttontext' => 'Oke, tutup'
                             ];
                         } else {
