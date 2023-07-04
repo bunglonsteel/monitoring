@@ -47,14 +47,17 @@ class Expenses extends CI_Controller {
                         </div>';
                 $data[] = $row;
             }
-            $output = [
+            $saldo         = (float) $this->Settings_model->get_option('balance')->option_value | 0;
+            $expense_month = (float) $this->expenses->sum_filtered()->amount | 0;
+            $expense_year  = (float) $this->expenses->sum_filtered('year')->amount | 0;
+            $output        = [
                 "draw"            => $_POST['draw'],
                 "recordsTotal"    => $this->expenses->count_all_result("expenses"),
                 "recordsFiltered" => $this->expenses->count_filtered("expenses"),
                 "data"            => $data,
-                "balance"         => "Rp. " . number_format($this->Settings_model->get_option('balance')->option_value, 0, ',', '.'),
-                "expense_month"   => "Rp. " . number_format($this->expenses->sum_filtered()->amount, 0, ',', '.'),
-                "expense_year"    => "Rp. " . number_format($this->expenses->sum_filtered('year')->amount, 0, ',', '.'),
+                "balance"         => "Rp. " . number_format($saldo, 0, ',', '.'),
+                "expense_month"   => "Rp. " . number_format($expense_month, 0, ',', '.'),
+                "expense_year"    => "Rp. " . number_format($expense_year, 0, ',', '.'),
                 "csrf_hash"       => $this->security->get_csrf_hash()
             ];
             return $this->output->set_content_type('application/json')->set_output(json_encode($output));
