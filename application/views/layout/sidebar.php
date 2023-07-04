@@ -147,7 +147,7 @@
                                     <?php if ($this->session->userdata('role_id') == 2) : ?>
                                     <li class="nav-item <?php if ($this->uri->segment(1) == 'task-categories') : ?> active <?php endif; ?>">
                                         <a class="nav-link" href="<?= base_url('task-categories') ?>">
-                                            <span class="nav-link-text">Tugas Kategori</span>
+                                            <span class="nav-link-text">Tugas Cek Item</span>
                                         </a>
                                     </li>
                                     <?php endif; ?>
