@@ -16,6 +16,10 @@ class Settings_model extends CI_Model {
                 ->update('settings');
     }
 
+    public function get_option($option)
+    { 
+        return $this->db->get_where('options', ['option_type' => $option])->row();
+    }
 }
 
 /* End of file Settings_model.php */

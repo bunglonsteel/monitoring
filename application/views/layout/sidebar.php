@@ -203,6 +203,34 @@
                         </ul>
                     </li>
 
+                    <?php if ($this->session->userdata('role_id') == 2) : ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#expenses">
+                                <span class="nav-icon-wrap">
+                                    <span class="feather-icon">
+                                        <i class="form-icon" data-feather="credit-card"></i>
+                                    </span>
+                                </span>
+                                <span class="nav-link-text">Pengeluaran</span>
+                            </a>
+                            <ul id="expenses" class="nav flex-column collapse  nav-children">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'expenses') : ?> active <?php endif; ?>">
+                                            <a class="nav-link" href="<?= base_url('expenses') ?>">
+                                                <span class="nav-link-text">Pengeluaran</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php if ($this->uri->segment(1) == 'expenses-category') : ?> active <?php endif; ?>">
+                                            <a class="nav-link" href="<?= base_url('expenses-category') ?>">
+                                                <span class="nav-link-text">Kategori</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
 

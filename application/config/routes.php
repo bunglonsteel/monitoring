@@ -20,6 +20,9 @@ $route['tasks'] = 'project/tasks';
 $route['task-categories'] = 'project/task_categories';
 $route['task/categories'] = 'project/categories';
 
+// Expenses
+$route['expenses-category'] = 'expenses/expenses_category';
+
 // Notes
 $route['notes-section'] = 'notes/notes_section';
 $route['list-notes'] = 'notes/list_notes';
