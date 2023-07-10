@@ -58,8 +58,16 @@ class Expenses_model extends CI_Model {
         if ($time == "month") {
             $this->db->where('MONTH(date)', date('m'));
             $this->db->where('YEAR(date)', date('Y'));
-        } else {
+        } else if($time == "year"){
             $this->db->where('YEAR(date)', date('Y'));
+        } else if($time == "filter"){
+            $date = $this->input->post('filter', TRUE);
+            if ($date) {
+                $date       = explode("-", $date);
+                $start_date = date('Y-m-d', strtotime($date[0]));
+                $end_date   = date('Y-m-d', strtotime($date[1]));
+                $this->db->where("DATE(date) >= '$start_date' AND DATE(date) <= '$end_date'");
+            }
         }
         return $this->db->get('expenses')->row();
     }

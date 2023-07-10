@@ -57,7 +57,18 @@
                 <div class="col-md-12 mb-md-4 mb-3">
                     <div class="card card-border mb-0 h-100">
                         <div class="card-header card-header-action">
-                            <h6>Semua Pengeluaran</h6>
+                            <div>
+                                <div class="input-group">
+                                    <span class="input-affix-wrapper">
+                                        <span class="input-prefix">
+                                            <span class="feather-icon">
+                                                <i data-feather="filter"></i>
+                                            </span>
+                                        </span>
+                                        <input type="text" name="filter" class="form-control" placeholder="Fillter">
+                                    </span>
+                                </div>
+                            </div>
                             <div class="card-action-wrap">
                                 <button id="action-add" class="btn btn-sm btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modal">
                                     <span>
@@ -71,7 +82,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-3 pt-4">
+                        <div class="card-body p-3">
                             <div class="contact-list-view">
                                 <table id="table" class="table nowrap w-100">
                                     <thead>
@@ -211,6 +222,7 @@
         const notifAlert = $('.notif')
         const form       = $('#form');
         const formKas    = $('#form-kas');
+        const filter     = $('input[name="filter"]');
         var saveAction;
 
         const modal     = new bootstrap.Modal(document.getElementById('modal'))
@@ -222,6 +234,7 @@
             btnSave.text(btnText)
             modal.show()
             form[0].reset()
+            notifAlert.empty()
             $('input[name="amount"]').removeAttr('disabled')
 
             $('#expense-categories').select2().empty()
@@ -251,6 +264,7 @@
                     previous: '<i class="ri-arrow-left-s-line"></i>' // or '←' 
                 }
             },
+            dom: '<"row align-items-center"<"col-6 col-md-6"l><"col-6 col-md-6"<"#grand-total.text-center text-lg-end">>>t<"row align-items-center"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
             drawCallback: _ => {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple pagination-sm');
                 $('tbody tr').addClass('fs-7')
@@ -262,10 +276,11 @@
                 type: 'POST',
                 data: function(e) {
                     e.csrf_token = csrf.attr('content');
+                    e.filter     = filter.val();
                 },
                 dataSrc: function(e) {
                     csrf.attr('content', e.csrf_hash)
-
+                    $('#grand-total').html(`<span>Total Pengeluaran</span><h4 class="mb-0">${e.amount_filter}</h4>`)
                     $('#balance').html(e.balance)
                     if (e.balance.replace(/(Rp. )/,'').replaceAll('.','') < 0) {
                         $('#balance').removeClass('text-dark').addClass('text-danger')
@@ -280,6 +295,24 @@
         });
 
         dateRangePicker()
+
+        filter.daterangepicker({
+            maxDate: new Date(),
+            locale: {
+                format: 'DD MMM YYYY'
+            },
+            ranges: {
+            'Hari Ini': [moment(), moment()],
+            'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+            '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+            'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+            'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        });
+        filter.change(function(){
+            table.DataTable().draw()
+        })
 
         form.submit(function(e) {
             e.preventDefault();
@@ -297,7 +330,9 @@
                 dataType: "JSON",
                 success: function(response) {
                     notifAction(response)
-                    loadAfterAction()
+                    if (response.success) {
+                        loadAfterAction()
+                    }
                 }
             });
         });

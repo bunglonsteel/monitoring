@@ -50,6 +50,7 @@ class Expenses extends CI_Controller {
             $saldo         = (float) $this->Settings_model->get_option('balance')->option_value | 0;
             $expense_month = (float) $this->expenses->sum_filtered()->amount | 0;
             $expense_year  = (float) $this->expenses->sum_filtered('year')->amount | 0;
+            $amount_filter = (float) $this->expenses->sum_filtered('filter')->amount | 0;
             $output        = [
                 "draw"            => $_POST['draw'],
                 "recordsTotal"    => $this->expenses->count_all_result("expenses"),
@@ -58,6 +59,7 @@ class Expenses extends CI_Controller {
                 "balance"         => "Rp. " . number_format($saldo, 0, ',', '.'),
                 "expense_month"   => "Rp. " . number_format($expense_month, 0, ',', '.'),
                 "expense_year"    => "Rp. " . number_format($expense_year, 0, ',', '.'),
+                "amount_filter"   => "Rp. " . number_format($amount_filter, 0, ',', '.'),
                 "csrf_hash"       => $this->security->get_csrf_hash()
             ];
             return $this->output->set_content_type('application/json')->set_output(json_encode($output));
@@ -131,8 +133,8 @@ class Expenses extends CI_Controller {
                 $this->form_validation->set_rules(
                     'amount',
                     'Jumlah Pengeluaran',
-                    'trim|required|numeric',
-                    ['required' => '%s tidak boleh kosong.']
+                    'trim|required|numeric|min_length[4]',
+                    ['required' => '%s tidak boleh kosong.', 'min_length' => '%s tidak boleh lebih kecil dari Rp. 1.000.']
                 );
                 $output = $this->_add($request);
             } else {
@@ -420,8 +422,8 @@ class Expenses extends CI_Controller {
         $this->form_validation->set_rules(
             'amount',
             'Jumlah Pengeluaran',
-            'trim|required|numeric',
-            ['required' => '%s tidak boleh kosong.']
+            'trim|required|numeric|min_length[4]',
+            ['required' => '%s tidak boleh kosong.','min_length' => '%s tidak boleh lebih kecil dari Rp. 1.000.']
         );
 
         $amount =  $this->input->post('amount', TRUE);
