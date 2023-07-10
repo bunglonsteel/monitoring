@@ -269,7 +269,7 @@
                     previous: '<i class="ri-arrow-left-s-line"></i>' // or '←' 
                 }
             },
-            dom: '<"row align-items-center"<"col-6 col-md-6"l><"col-6 col-md-6"<"#grand-total.text-center text-lg-end">>>t<"row align-items-center"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            dom: '<"row align-items-center"<"col-12"<"#grand-total.text-center">>>t<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"p>>',
             drawCallback: _ => {
                 $('.dataTables_paginate > .pagination').addClass('custom-pagination pagination-simple pagination-sm');
                 $('tbody tr').addClass('fs-7')
@@ -285,7 +285,7 @@
                 },
                 dataSrc: function(e) {
                     csrf.attr('content', e.csrf_hash)
-                    $('#grand-total').html(`<span>Total Pengeluaran</span><h4 class="mb-0">${e.amount_filter}</h4>`)
+                    $('#grand-total').html(`<span>Total Pengeluaran</span><h4 class="mb-0 fw-bold">${e.amount_filter}</h4>`)
                     $('#balance').html(e.balance)
                     if (e.balance.replace(/(Rp. )/,'').replaceAll('.','') < 0) {
                         $('#balance').removeClass('text-dark').addClass('text-danger')
@@ -309,7 +309,6 @@
             locale: {
                 format: 'DD MMM YYYY'
             },
-            drops: "auto",
             ranges: {
                 'Hari Ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
