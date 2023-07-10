@@ -22,6 +22,14 @@ class Expenses_model extends CI_Model {
                 $this->db->like('project_name', strip_tags(htmlspecialchars($_POST['search']['value'])));
             }
 
+            $date = $this->input->post('filter', TRUE);
+            if ($date) {
+                $date       = explode("-", $date);
+                $start_date = date('Y-m-d', strtotime($date[0]));
+                $end_date   = date('Y-m-d', strtotime($date[1]));
+                $this->db->where("DATE(date) >= '$start_date' AND DATE(date) <= '$end_date'");
+            }
+
             if ($_POST['order'][0]['column']) {
                 $this->db->order_by($this->order_expenses[$_POST['order'][0]['column']], $_POST['order'][0]['dir']);
             } else {

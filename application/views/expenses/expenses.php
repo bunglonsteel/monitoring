@@ -297,7 +297,10 @@
         dateRangePicker()
 
         filter.daterangepicker({
+            showDropdowns: true,
             maxDate: new Date(),
+            maxYear: moment().year(),
+            minYear: moment().subtract(1, "years").year(),
             locale: {
                 format: 'DD MMM YYYY'
             },
