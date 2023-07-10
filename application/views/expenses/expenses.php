@@ -57,27 +57,32 @@
                 <div class="col-md-12 mb-md-4 mb-3">
                     <div class="card card-border mb-0 h-100">
                         <div class="card-header card-header-action">
-                            <div>
-                                <div class="input-group">
+                            <div class="d-flex align-items-center">
+                                <div class="input-group me-2">
                                     <span class="input-affix-wrapper">
                                         <span class="input-prefix">
                                             <span class="feather-icon">
                                                 <i data-feather="filter"></i>
                                             </span>
                                         </span>
-                                        <input type="text" name="filter" class="form-control" placeholder="Fillter">
+                                        <input type="text" name="filter" class="form-control" placeholder="Filter tanggal">
                                     </span>
                                 </div>
+                                <button id="btn-filter-reset" class="btn btn-icon btn-sm btn-soft-dark flush-soft-hover px-2" type="button" style="display: none">
+                                    <span class="icon fs-8">
+                                        <i class="icon dripicons-clockwise"></i>
+                                    </span>
+                                </button>
                             </div>
                             <div class="card-action-wrap">
-                                <button id="action-add" class="btn btn-sm btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#modal">
+                                <button id="action-add" class="btn btn-sm btn-primary ms-3 py-2 py-md-1" data-bs-toggle="modal" data-bs-target="#modal">
                                     <span>
                                         <span class="icon">
                                             <span class="feather-icon">
                                                 <i data-feather="plus"></i>
                                             </span>
                                         </span>
-                                        <span class="btn-text">Pengeluaran</span>
+                                        <span class="d-none d-md-block btn-text">Pengeluaran</span>
                                     </span>
                                 </button>
                             </div>
@@ -304,16 +309,19 @@
             locale: {
                 format: 'DD MMM YYYY'
             },
+            drops: "auto",
             ranges: {
-            'Hari Ini': [moment(), moment()],
-            'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
-            '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
-            'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-            'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                'Hari Ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         });
+        filter.val('')
         filter.change(function(){
+            $('#btn-filter-reset').show()
             table.DataTable().draw()
         })
 
@@ -325,7 +333,7 @@
             } else {
                 url = '<?= base_url('expenses/action/update') ?>'
             }
-
+            filter.val('')
             $.ajax({
                 type: "POST",
                 url: url,
@@ -357,6 +365,13 @@
                     }, 1300);
                 }
             });
+        });
+
+        $('#btn-filter-reset').click(function(e) {
+            e.preventDefault();
+            filter.val('')
+            table.DataTable().ajax.reload();
+            $(this).hide()
         });
 
         $('#action-add').click(function(e) {
