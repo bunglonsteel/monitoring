@@ -5,7 +5,7 @@
         <?php $this->load->view('layout/breadcrumbs') ?>
 
         <div class="hk-page-body">
-            <div class="row align-items-center">
+            <div class="row">
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="card card-border h-100 mb-md-0">
                         <div class="card-header">
@@ -55,11 +55,10 @@
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                        <small>Total Selesai</small>
                                             <h6 class="text-xs text-primary mb-0">
                                                 Pekerjaan Selesai
                                             </h6>
-                                            <div id="selesai" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                            <div id="finished" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
                                         </div>
                                         <div class="col-auto">
                                             <span class="feather-icon">
@@ -75,11 +74,29 @@
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                        <small>Total Kekurangan</small>
                                             <h6 class="text-xs text-primary mb-0">
-                                                Tidak terpenuhi
+                                                Wajib dikerjakan
                                             </h6>
-                                            <div id="kekurangan" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                            <div id="job" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="clipboard" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h6 class="text-xs text-primary mb-0">
+                                                Tidak mengerjakan
+                                            </h6>
+                                            <div id="not-doing" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
                                         </div>
                                         <div class="col-auto">
                                             <span class="feather-icon">
@@ -95,7 +112,82 @@
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <small>Penghargaan</small>
+                                            <h6 class="text-xs text-primary mb-0">
+                                                Belum di nilai
+                                            </h6>
+                                            <div id="not-yet-rated" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="info" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h6 class="text-xs text-primary mb-0">
+                                                Sangat Baik
+                                            </h6>
+                                            <div id="very-good" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="check-circle" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h6 class="text-xs text-primary mb-0">
+                                                Bagus
+                                            </h6>
+                                            <div id="good" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="check" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <h6 class="text-xs text-primary mb-0">
+                                                Perlu ditingkatkan
+                                            </h6>
+                                            <div id="must-be-improved" class="mb-0 fw-bold text-dark" style="font-size:2.3rem;">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="feather-icon">
+                                                <i data-feather="bar-chart" style="color: #eaeaea; font-size:45px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2 mb-md-0">
+                            <div class="card card-border h-100 pt-2 pb-0">
+                                <div class="card-body pt-3 pb-0">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
                                             <h6 class="text-xs text-primary mb-3">
                                                 Status Penilaian
                                             </h6>
@@ -122,8 +214,6 @@
         $(document).on('submit','#filter-kebersihan', function(e){
             e.preventDefault()
             const url = $(this).attr('action')
-            // console.log($(this).serializeArray())
-            // console.log(url)
             $.ajax({
                 type: "POST",
                 url: url, 
@@ -132,10 +222,15 @@
                 cache: false,
                 success: function(response){
                     if (response.success) {
-                        $('#selesai').text(response.data.total_selesai)
-                        $('#kekurangan').text(response.data.total_kurang)
+                        $('#finished').text(response.data.finished)
+                        $('#job').text(response.data.jobs)
+                        $('#not-doing').text(response.data.not_doing)
+                        $('#not-yet-rated').text(response.data.not_yet_rated)
+                        $('#very-good').text(response.data.very_good)
+                        $('#good').text(response.data.good)
+                        $('#must-be-improved').text(response.data.must_be_improved)
 
-                        const res_p = response.data.penilaian
+                        const res_p = response.data.rating
                         const penilaian = (res_p == 3) ? `<span class="badge badge-soft-success">Sangat Baik</span>` : ((res_p == 2) ? `<span class="badge badge-soft-primary">Baik</span>` : `<span class="badge badge-soft-danger">Kurang</span>`)
                         $('#rating').html(penilaian)
                         $('#csrf').val(response.csrfHash)

@@ -41,13 +41,17 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                <th>#</th>
+                                <?php if($this->session->userdata('role_id') == 2) : ?>
+                                    <th>
+                                        <input id="select-all" class="form-check-input" type="checkbox">
+                                    </th>
+                                <?php endif;?>
                                 <th>Kebersihan</th>
                                 <th>Nama</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
                                 <?php if($this->session->userdata('role_id') == 2) : ?>
-                                <th>Beri Penilaian</th>
+                                    <th id="review">Beri Penilaian</th>
                                 <?php endif;?>
                                 </tr>
                             </thead>
@@ -55,7 +59,11 @@
                                 <?php if($check_progress) : ?>
                                     <?php $no = 1;foreach($check_progress as $check) : ?>
                                         <tr>
-                                            <th scope="row"><?= $no++ ?>.</th>
+                                            <?php if($this->session->userdata('role_id') == 2) : ?>
+                                                <th scope="row">
+                                                    <input class="form-check-input select-row" type="checkbox" name="check[]" data-id="<?= $check['cleanliness_progress_id'] ?>" data-check="<?= $check['cleanliness_status'] ?>">
+                                                </th>
+                                            <?php endif;?>
                                             <td><?= $check['cleanliness_name'] ?></td>
                                             <td><?= $check['employee_name'] ?></td>
                                             <td><?= date('d M Y', strtotime($check['cleanliness_date'])) ?></td>
@@ -120,7 +128,7 @@
         <?php $this->load->view('layout/footer-copyright') ?>
     </div>
 </div>
-
+<script async src="<?= base_url('public/assets/') ?>dist/js/bootstrap-notify.min.js"></script>
 
 <?php 
 $result = [];
@@ -215,45 +223,154 @@ foreach($check_progress as $check){
             });
             return false;
         })
-    });
+    var total_check_boxes;
+    var total_checked_boxes;
+    var check = []
 
-    function sweatalert_confirm(type, res){
-        let icon;
-        let classHeader;
-        if (type == 'success') {
-            icon = '😍';
-            classHeader = 'avatar-soft-success'
-        } else if(type == 'danger'){
-            icon = '😣';
-            classHeader = 'avatar-soft-danger'
-        } else if(type == 'warning'){
-            icon = '🧐';
-            classHeader = 'avatar-soft-warning'
+    const actionReview = _ => {
+		if (total_checked_boxes > 0) {
+            $('#review').html(`
+                <div class="mt-1">
+                    <button class="btn btn-icon btn-sm btn-soft-success btn-evaluations" type="button" data-codestat="2">
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="check-circle"></i>
+                            </span>
+                        </span>
+                    </button>
+                    <button class="btn btn-icon btn-sm btn-soft-light btn-evaluations" type="button" data-codestat="3">
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="plus-circle"></i>
+                            </span>
+                        </span>
+                    </button>
+                    <button class="btn btn-icon btn-sm btn-soft-danger btn-evaluations" type="button" data-codestat="4">
+                        <span class="icon">
+                            <span class="feather-icon">
+                                <i data-feather="minus-circle"></i>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            `)
+            feather.replace()
+            const filterPending = $(".select-row:checked").map((i, v) => v.dataset.check == "P" ? v.dataset.id : '')
+            check = [...filterPending] ;
+
+        } else {
+            $('#review').html('Beri penilaian')
+        }
+    }
+
+    $(".select-row").on("change", function () {
+        total_check_boxes   = $(".select-row").length;
+        total_checked_boxes = $(".select-row:checked").length;
+
+		if (total_check_boxes === total_checked_boxes) {
+			$("#select-all").prop("checked", true);
+		}
+		else {
+			$("#select-all").prop("checked", false);
+		}
+
+        if ($(this).closest('tr').hasClass('bg-light')) {
+            $(this).closest('tr').removeClass('bg-light')
+        } else {
+            $(this).closest('tr').addClass('bg-light')
+        }
+        actionReview()
+	});
+
+    $('#select-all').on('click', function(e){
+
+        if ($(this).is(':checked')) {
+            $('.select-row').prop('checked', true)
+            $('tbody tr').addClass('bg-light')
+        } else {
+            $('tbody tr').removeClass('bg-light')
+            $('.select-row').prop('checked', false)
         }
 
-        Swal.fire({
-            html:
-            `<div class="avatar avatar-icon ${classHeader}  mb-3">
-                <span class="initial-wrap rounded-8">
-                    ${icon}
-                </span>
-            </div>
-            <div>
-                <h5 class="text-dark fw-bold">${res.title}</h5>
-                <p class="fs-7 mt-2">${res.desc}</p>
-            </div>`,
-            customClass: {
-                content: 'p-3 text-center',
-                confirmButton: 'btn btn-primary fs-7',
-                actions: 'justify-content-center mt-1',
-            },
-            width: 300,
-            confirmButtonText: res.buttontext,
-            buttonsStyling: false,
-        }).then((r) => {
-            setTimeout(() => {
-                location.reload()
-            }, 10);
-        })
+        total_checked_boxes = $(".select-row:checked").length;
+        actionReview()
+    })
+
+    $('body').on('click', '.btn-evaluations', function(e){
+
+        const url         = "<?= base_url('cleanliness/ratings')?>"
+        const codeStat    = $(this).data('codestat')
+        const cleanliness = check.filter((v) => v)
+
+        if (cleanliness.length > 0) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    cleanliness : cleanliness,
+                    rating : codeStat,
+                    csrf_token : csrf.attr('content')
+                },
+                dataType: "json",  
+                cache: false,
+                success: function(response){
+                    if (response.success) {
+                        sweatalert_confirm('success', response)
+                    }
+                    if (response.error) {
+                        sweatalert_confirm('danger', response)
+                    }
+                },
+                error : function(xhr, status, errorThrown){
+                    console.log(xhr.responseText)
+                    console.log(status)
+                    console.log(errorThrown)
+                }
+            });
+        } else {
+            show_toast('warning', 'Warning', 'Kebersihan telah diberi penilaian semua.')
+        }
+        return false;
+    })
+
+    });
+function sweatalert_confirm(type, res){
+    let icon;
+    let classHeader;
+    if (type == 'success') {
+        icon = '😍';
+        classHeader = 'avatar-soft-success'
+    } else if(type == 'danger'){
+        icon = '😣';
+        classHeader = 'avatar-soft-danger'
+    } else if(type == 'warning'){
+        icon = '🧐';
+        classHeader = 'avatar-soft-warning'
     }
+
+    Swal.fire({
+        html:
+        `<div class="avatar avatar-icon ${classHeader}  mb-3">
+            <span class="initial-wrap rounded-8">
+                ${icon}
+            </span>
+        </div>
+        <div>
+            <h5 class="text-dark fw-bold">${res.title}</h5>
+            <p class="fs-7 mt-2">${res.desc}</p>
+        </div>`,
+        customClass: {
+            content: 'p-3 text-center',
+            confirmButton: 'btn btn-primary fs-7',
+            actions: 'justify-content-center mt-1',
+        },
+        width: 300,
+        confirmButtonText: res.buttontext,
+        buttonsStyling: false,
+    }).then((r) => {
+        setTimeout(() => {
+            location.reload()
+        }, 10);
+    })
+}
 </script>

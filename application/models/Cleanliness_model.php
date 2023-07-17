@@ -27,7 +27,12 @@ class Cleanliness_model extends CI_Model {
         return $this->db->select("employee_id, 
                                     DATE_FORMAT(cleanliness_date, '%m-%Y') as month, 
                                     COUNT(DISTINCT cleanliness_date) as total_date,
-                                    sum(if(cleanliness_status != 'D' AND cleanliness_status != 'P',1,0)) AS selesai")
+                                    sum(if(cleanliness_status,1,0)) as selesai,
+                                    sum(if(cleanliness_status = 'P',1,0)) as not_yet_review,
+                                    sum(if(cleanliness_status = 'D',1,0)) as must_be_improved,
+                                    sum(if(cleanliness_status = 'G',1,0)) as good,
+                                    sum(if(cleanliness_status = 'VG',1,0)) as very_good,
+                                    ")
                         ->from('cleanliness_progress')
                         ->where('DATE_FORMAT(cleanliness_date, "%m-%Y")=', $bulan)
                         ->group_by('employee_id')
@@ -37,6 +42,13 @@ class Cleanliness_model extends CI_Model {
 
     public function get_cleanliness_progress_by($array){
         return $this->db->get_where('cleanliness_progress', $array)->row_array();
+    }
+
+    public function get_in($table, $key, $where_in)
+    {
+        return $this->db->from($table)
+            ->where_in($key, $where_in)
+            ->get();
     }
 
     public function add($table, $data){

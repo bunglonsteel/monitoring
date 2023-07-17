@@ -154,11 +154,10 @@ class Cleanliness extends CI_Controller {
         } else {
 
             $cleanliness_id = strip_tags(htmlspecialchars($_REQUEST['id']));
-            $employee_id = strip_tags(htmlspecialchars($_REQUEST['employee']));
+            $employee_id    = strip_tags(htmlspecialchars($_REQUEST['employee']));
 
             $check_employee = $this->Employee_model->get_employee_by_id($employee_id);
-            $department_id    = $this->db->get_where('department',['name_department' => 'kebersihan'])->row_array();
-            // var_dump($department);die;
+            $department_id  = $this->db->get_where('department',['name_department' => 'kebersihan'])->row_array();
             if ($check_employee['department_id'] != $department_id['department_id']) {
                 $message = [
                     'error' => 'true',
@@ -198,7 +197,7 @@ class Cleanliness extends CI_Controller {
         }
     }
 
-    public function rating($cp_id = '', $approvecode = ''){ // enum(P, VG, M, D)
+    public function rating($cp_id = '', $approvecode = ''){
         check_user_acces();
         if (!$this->input->is_ajax_request()) {
             exit('No direct script access allowed');
@@ -206,7 +205,6 @@ class Cleanliness extends CI_Controller {
             $cleanliness_pr_id = strip_tags(htmlspecialchars($cp_id));
             $cleanliness_status = strip_tags(htmlspecialchars($approvecode));
             $check_cp = $this->Cleanliness_model->get_cleanliness_progress_by(['cleanliness_progress_id' => $cleanliness_pr_id]);
-            // var_dump($check_cp);die;
             
             if ($check_cp == null) {
                 $message = [
@@ -232,6 +230,44 @@ class Cleanliness extends CI_Controller {
 
             echo json_encode($message);
         }
+    }
+
+    public function ratings(){
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $this->form_validation->set_rules('cleanliness[]',"Bagian Kebersihan", "trim|numeric");
+            $this->form_validation->set_rules('rating',"Penilaian", "trim|numeric|in_list[2,3,4]");
+
+            $cleanliness        = $this->input->post('cleanliness[]', true);
+            $cleanliness_status = strip_tags(htmlspecialchars($this->input->post('rating', true) ?? ''));
+
+            if ($this->form_validation->run() == FALSE) {
+                $output = [
+                    'error'     => 'true',
+                    'message'   => validation_errors(" ", " "),
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+                $data = [];
+                foreach ($cleanliness as $value) {
+                    $data[] = [
+                        "cleanliness_progress_id" => $value,
+                        "cleanliness_status"      => $cleanliness_status,
+                    ];
+                }
+
+                $this->db->update_batch('cleanliness_progress', $data, 'cleanliness_progress_id');
+                $output = [
+                    'success'    => true,
+                    'title'      => 'Berhasil!',
+                    'desc'       => 'Penilaian berhasil, terimakasih.',
+                    'buttontext' => 'Oke, tutup',
+                ];
+            }
+        }
+
+        echo json_encode($output);
     }
 
     public function laporan(){
@@ -266,30 +302,44 @@ class Cleanliness extends CI_Controller {
                     'buttontext' => 'Oke, tutup'
                 ];
             } else {
-                $result = $this->Cleanliness_model->get_laporan_by_month($bulan);
+                $result           = $this->Cleanliness_model->get_laporan_by_month($bulan);
                 $semua_kebersihan = $this->db->count_all('cleanliness');
-                if ($result == null) {
+// var_dump($semua_kebersihan);die;
+                if (!$result) {
                     $message = [
-                        'error' => 'true',
-                        'title' => 'Mohon Maaf',
-                        'desc' => 'Dibulan ini belum ada yang diselesaikan.',
+                        'error'      => 'true',
+                        'title'      => 'Mohon Maaf',
+                        'desc'       => 'Dibulan ini belum ada yang diselesaikan.',
                         'buttontext' => 'Oke, tutup'
                     ];
                 } else {
-                    $total_selesai = $result['selesai'];
+                    $total_selesai    = $result['selesai'];
                     $total_kebersihan = $semua_kebersihan * $result['total_date'];
-                    $total_kurang = $total_kebersihan - $total_selesai;
-    
-                    $count_penilaian = ($total_selesai / $total_kebersihan) * 100;
-                    $penilaian = ($count_penilaian >= 90) ? 3 : (($count_penilaian < 90 && $count_penilaian >= 50) ? 2 : 1);
+                    $total_kurang     = $total_kebersihan - $total_selesai;
+
+                    $total_improved  = $result['must_be_improved'] * 1;
+                    $total_pending   = $result['not_yet_review'] * 3;
+                    $total_good      = $result['good'] * 4;
+                    $total_very_good = $result['very_good'] * 5;
+
+                    $total_ipgv = array_sum([$total_improved, $total_pending, $total_good, $total_very_good]);
+                    $calculate  = 5 * $total_kebersihan;
+
+                    $count_penilaian = ($total_ipgv / $calculate) * 100;
+                    $penilaian       = ($count_penilaian >= 66) ? 3 : (($count_penilaian < 66 && $count_penilaian >= 33) ? 2 : 1);
 
                     $message = [
                         'success' => 'true',
-                        'title' => 'Berhasil!',
-                        'data' => [
-                            'total_selesai' => $total_selesai,
-                            'total_kurang' => $total_kurang,
-                            'penilaian' => $penilaian,
+                        'title'   => 'Berhasil!',
+                        'data'    => [
+                            'finished'         => $total_selesai,
+                            'jobs'             => $total_kebersihan,
+                            'not_doing'        => $total_kurang,
+                            'not_yet_rated'    => $result['not_yet_review'],
+                            'very_good'        => $result['very_good'],
+                            'good'             => $result['good'],
+                            'must_be_improved' => $result['must_be_improved'],
+                            'rating'           => $penilaian,
                         ],
                         'csrfHash' => $this->security->get_csrf_hash()
                     ];
