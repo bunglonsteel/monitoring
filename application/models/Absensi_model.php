@@ -72,6 +72,16 @@ class Absensi_model extends CI_Model {
                         ->row_array();
     }
 
+    public function get_laporan($bulan, $tahun, $employee_id){
+        return $this->db->select('*')
+                        ->from('absensi')
+                        ->where('DATE_FORMAT(date, "%m")=', $bulan)
+                        ->where('DATE_FORMAT(date, "%Y")=', $tahun)
+                        ->where('employee_id', $employee_id)
+                        ->get()
+                        ->result();
+    }
+
     public function get_laporan_by_year($employee_id){
         return $this->db->select("employee_id, DATE_FORMAT(date, '%Y') as date, sum(if(presence = 1,1,0)) AS hadir, sum(if(presence = 2,1,0)) AS izin , sum(if(presence = 3 OR presence = 4,1,0)) AS sakit,")
                         ->from('absensi')

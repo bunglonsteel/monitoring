@@ -321,6 +321,86 @@ class Absensi extends CI_Controller {
                         'buttontext' => 'Oke, tutup'
                     ];
                 } else {
+
+                    $date_filter       = explode('-', $bulan);
+                    $total_dayin_month = cal_days_in_month(CAL_GREGORIAN,$date_filter[0],$date_filter[1]);
+
+                    $create_date = mktime(0, 0, 0, $date_filter[0], 1, $date_filter['1']);
+                    $month_name  = date('M', $create_date);
+
+                    $laporan = $this->Absensi_model->get_laporan($date_filter[0], $date_filter[1], $employee_id);
+
+                    $loop_date = $create_date;
+                    $calendar  = [];
+                    for ($i=1; $i <= $total_dayin_month; $i++) { 
+                        $holiday      = date('w', $loop_date)                             == 0 || date('w', $loop_date) == 6 ? 'libur' : 'masuk';
+                        $background   = $holiday                                          == 'libur' ? 'bg-danger' : 'bg-primary';
+                        $target_value = array_filter($laporan, fn($v) => date('j', strtotime($v->date)) == $i);
+                        $alpa         = $loop_date < strtotime(date('y-m-d')) && $holiday != 'libur' ? 'A' : '-';
+                        if (count($target_value) > 0) {
+                            $target_value = [...$target_value][0]->presence;
+
+                            switch ($target_value) {
+                                case 1:
+                                    $status = 'H';
+                                    $text_color = 'text-primary';
+                                    break;
+                                case 2:
+                                    $status = 'I';
+                                    $text_color = 'text-blue';
+                                    break;
+                                default:
+                                    $status = 'S';
+                                    $text_color = 'text-pink';
+                                break;
+                            }
+                            
+                            $calendar[]   = '
+                                <div class="col-4 col-md-2 col-lg-2">
+                                    <div class="position-relative card card-border mb-0 overflow-hidden">
+                                        <div class="card-body p-2 d-flex align-items-center gap-2">
+                                            <div class="border px-2 rounded-3 text-center">
+                                                <span class="px-2 rounded fs-8" style="background: #ededed">'.$month_name.'</span>
+                                                <h4 class="fw-bold" style="margin-bottom:-10px">'.$i.'</h4>
+                                                <span class="fs-9">'.date('D', $loop_date).'</span>
+                                            </div>
+                                            <div class="d-flex align-items-end mt-2 mx-auto">
+                                                <h2 class="fw-bold mb-0 '.$text_color.'">'.$status.'</h2>
+                                                <span class="feather-icon text-primary fw-bold">
+                                                    <i data-feather="check-circle"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="position-absolute top-0 end-0 fs-9 '.$background.' text-white px-1 fw-bold">'.ucwords($holiday).'</span>
+                                    </div>
+                                </div>
+                            ';
+                        } else {
+                            $text_color = $alpa == 'A' ? 'text-danger' : '';
+                            $calendar[] = '
+                                <div class="col-4 col-md-2 col-lg-2">
+                                    <div class="position-relative card card-border mb-0 overflow-hidden">
+                                        <div class="card-body p-2 d-flex align-items-center gap-2">
+                                            <div class="border px-2 rounded-3 text-center">
+                                                <span class="px-2 rounded fs-8" style="background: #ededed">'.$month_name.'</span>
+                                                <h4 class="fw-bold" style="margin-bottom:-10px">'.$i.'</h4>
+                                                <span class="fs-9">'.date('D', $loop_date).'</span>
+                                            </div>
+                                            <div class="d-flex align-items-end mt-2 mx-auto">
+                                                <h2 class="fw-bold mb-0 '.$text_color.'">'.$alpa.'</h2>
+                                                <span class="feather-icon text-primary fw-bold">
+                                                    <i data-feather="check-circle"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="position-absolute top-0 end-0 fs-9 '.$background.' text-white px-1 fw-bold">'.ucwords($holiday).'</span>
+                                    </div>
+                                </div>
+                                ';
+                        }
+
+                        $loop_date  = strtotime('+1 day', $loop_date);
+                    }
                     
                     $total_days = $this->countDays(strtotime($result['date']), 'day');
                     $total_sat_sun = $this->countDays(strtotime($result['date']), 'satsun');
@@ -332,6 +412,7 @@ class Absensi extends CI_Controller {
                         'desc' => $result,
                         'total_day' => $total_days,
                         'total_sat_sun' => $total_sat_sun,
+                        'calendar' => $calendar,
                         'total_alpa' => $total_alpa,
                         'csrfhash' => $this->security->get_csrf_hash(),
                         'buttontext' => 'Oke, tutup'

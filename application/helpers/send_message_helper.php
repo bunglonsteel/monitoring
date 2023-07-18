@@ -2,7 +2,7 @@
 
 if (!function_exists('send_message_whatsapp')) {
 
-	function send_message_whatsapp_multiple($notlp, $message, $token = 'y74C0EyuopvmMCTzvTg0') {
+	function send_message_whatsapp($notlp, $message, $token = 'y74C0EyuopvmMCTzvTg0') {
 		$curl = curl_init();
 		$config = [
 			CURLOPT_URL => 'https://api.fonnte.com/send',

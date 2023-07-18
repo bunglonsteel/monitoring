@@ -5,7 +5,7 @@
         <?php $this->load->view('layout/breadcrumbs') ?>
 
         <div class="hk-page-body">
-            <div class="row">
+            <div class="row g-2 g-md-3">
                 <div class="col-md-3 mb-3">
                     <div class="card card-border h-100">
                         <div class="card-header">
@@ -71,9 +71,9 @@
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <div class="row g-2">
+                    <div class="row g-2 g-md-3 mb-4">
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -113,7 +113,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -133,7 +133,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -153,7 +153,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -173,7 +173,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
-                            <div class="card card-border h-100 pt-2 pb-0">
+                            <div class="card card-border mb-0 h-100 pt-2 pb-0">
                                 <div class="card-body pt-3 pb-0">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -190,6 +190,24 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 g-md-3">
+                <div class="col-12">
+                    <h4 class="fw-bold mb-0">
+                        Kalendar Absensi
+                    </h4>
+                    <p class="fs-7">H = Hadir, I = Izin, S = Sakit, A = Alpa</p>
+                </div>
+                <div id="presence-calendar" class="row g-2 g-md-3">
+                    <div class="col-12">
+                        <div class="card card-border">
+                            <div class="card-body">
+                                Silahkan filter karyawan terlebih dahulu.
                             </div>
                         </div>
                     </div>
@@ -219,8 +237,6 @@
         $(document).on('submit','#filter-absensi', function(e){
             e.preventDefault()
             const url = $(this).attr('action')
-            // console.log($(this).serializeArray())
-            // console.log(url)
             $.ajax({
                 type: "POST",
                 url: url, 
@@ -236,6 +252,7 @@
                         $('#alpa').text(response.total_alpa)
                         $('#satsun').text(response.total_sat_sun)
                         $('#csrf').val(response.csrfhash)
+                        $('#presence-calendar').empty().append(response.calendar)
                     }
                     
                     if (response.error) {
