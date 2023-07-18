@@ -335,12 +335,13 @@ class Absensi extends CI_Controller {
                     for ($i=1; $i <= $total_dayin_month; $i++) { 
                         $holiday      = date('w', $loop_date)                             == 0 || date('w', $loop_date) == 6 ? 'libur' : 'masuk';
                         $background   = $holiday                                          == 'libur' ? 'bg-danger' : 'bg-primary';
-                        $target_value = array_filter($laporan, fn($v) => date('j', strtotime($v->date)) == $i);
-                        $alpa         = $loop_date < strtotime(date('y-m-d')) && $holiday != 'libur' ? 'A' : '-';
-                        if (count($target_value) > 0) {
-                            $target_value = [...$target_value][0]->presence;
+                        $selected_day = date('d', $loop_date)                             == date('d') ? 'border-primary' : '';
+                        $target       = array_filter($laporan, fn($v) => date('j', strtotime($v->date)) == $i);
+                        $status       = $loop_date < strtotime(date('y-m-d')) && $holiday != 'libur' ? 'A' : '-';
+                        if (count($target) > 0) {
+                            $target = [...$target][0]->presence;
 
-                            switch ($target_value) {
+                            switch ($target) {
                                 case 1:
                                     $status = 'H';
                                     $text_color = 'text-primary';
@@ -354,50 +355,30 @@ class Absensi extends CI_Controller {
                                     $text_color = 'text-pink';
                                 break;
                             }
-                            
-                            $calendar[]   = '
-                                <div class="col-4 col-md-2 col-lg-2">
-                                    <div class="position-relative card card-border mb-0 overflow-hidden">
-                                        <div class="card-body p-2 d-flex align-items-center gap-2">
-                                            <div class="border px-2 rounded-3 text-center">
-                                                <span class="px-2 rounded fs-8" style="background: #ededed">'.$month_name.'</span>
-                                                <h4 class="fw-bold" style="margin-bottom:-10px">'.$i.'</h4>
-                                                <span class="fs-9">'.date('D', $loop_date).'</span>
-                                            </div>
-                                            <div class="d-flex align-items-end mt-2 mx-auto">
-                                                <h2 class="fw-bold mb-0 '.$text_color.'">'.$status.'</h2>
-                                                <span class="feather-icon text-primary fw-bold">
-                                                    <i data-feather="check-circle"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <span class="position-absolute top-0 end-0 fs-9 '.$background.' text-white px-1 fw-bold">'.ucwords($holiday).'</span>
-                                    </div>
-                                </div>
-                            ';
+
                         } else {
-                            $text_color = $alpa == 'A' ? 'text-danger' : '';
-                            $calendar[] = '
-                                <div class="col-4 col-md-2 col-lg-2">
-                                    <div class="position-relative card card-border mb-0 overflow-hidden">
-                                        <div class="card-body p-2 d-flex align-items-center gap-2">
-                                            <div class="border px-2 rounded-3 text-center">
-                                                <span class="px-2 rounded fs-8" style="background: #ededed">'.$month_name.'</span>
-                                                <h4 class="fw-bold" style="margin-bottom:-10px">'.$i.'</h4>
-                                                <span class="fs-9">'.date('D', $loop_date).'</span>
-                                            </div>
-                                            <div class="d-flex align-items-end mt-2 mx-auto">
-                                                <h2 class="fw-bold mb-0 '.$text_color.'">'.$alpa.'</h2>
-                                                <span class="feather-icon text-primary fw-bold">
-                                                    <i data-feather="check-circle"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <span class="position-absolute top-0 end-0 fs-9 '.$background.' text-white px-1 fw-bold">'.ucwords($holiday).'</span>
-                                    </div>
-                                </div>
-                                ';
+                            $text_color = $status == 'A' ? 'text-danger' : '';
                         }
+                        $calendar[] = '
+                            <div class="col-4 col-md-2 col-lg-2">
+                                <div class="position-relative card card-border mb-0 overflow-hidden '.$selected_day.'">
+                                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                                        <div class="border px-2 rounded-3 text-center">
+                                            <span class="px-2 rounded fs-8" style="background: #ededed">'.$month_name.'</span>
+                                            <h4 class="fw-bold" style="margin-bottom:-10px">'.$i.'</h4>
+                                            <span class="fs-9">'.date('D', $loop_date).'</span>
+                                        </div>
+                                        <div class="d-flex align-items-end mt-2 mx-auto">
+                                            <h2 class="fw-bold mb-0 '.$text_color.'">'.$status.'</h2>
+                                            <span class="feather-icon text-primary fw-bold">
+                                                <i data-feather="check-circle"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="position-absolute top-0 end-0 fs-9 '.$background.' text-white px-1 fw-bold">'.ucwords($holiday).'</span>
+                                </div>
+                            </div>
+                            ';
 
                         $loop_date  = strtotime('+1 day', $loop_date);
                     }
