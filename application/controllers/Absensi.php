@@ -333,9 +333,9 @@ class Absensi extends CI_Controller {
                     $loop_date = $create_date;
                     $calendar  = [];
                     for ($i=1; $i <= $total_dayin_month; $i++) { 
-                        $holiday      = date('w', $loop_date)                             == 0 || date('w', $loop_date) == 6 ? 'libur' : 'masuk';
-                        $background   = $holiday                                          == 'libur' ? 'bg-danger' : 'bg-primary';
-                        $selected_day = date('d', $loop_date)                             == date('d') ? 'border-primary' : '';
+                        $holiday      = date('w', $loop_date) == 0 || date('w', $loop_date) == 6 ? 'libur' : 'masuk';
+                        $background   = $holiday == 'libur' ? 'bg-danger' : 'bg-primary';
+                        $selected_day = date('d-m-y', $loop_date) == date('d-m-y') ? 'border-primary' : '';
                         $target       = array_filter($laporan, fn($v) => date('j', strtotime($v->date)) == $i);
                         $status       = $loop_date < strtotime(date('y-m-d')) && $holiday != 'libur' ? 'A' : '-';
                         if (count($target) > 0) {
