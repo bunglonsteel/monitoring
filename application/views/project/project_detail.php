@@ -155,8 +155,8 @@
 
 <script>
     $(function () {
-        const table      = $('#table-task')
-        const paramid    = window.location.pathname.split('/')[4]
+        const table  = $('#table-task')
+        const paramid = $(location).attr('href').split('/')
         const statusTask = [{
             id: 'doing',
             text: "Doing",
@@ -206,7 +206,7 @@
             serverSide: true,
             deferRender: true,
             ajax: {
-                url: '<?= base_url() ?>project/task/'+ paramid,
+                url: '<?= base_url() ?>project/task/'+ paramid.at(-1),
                 type: 'POST',
                 data: function(e) {
                     e.csrf_token = csrf.attr('content');
