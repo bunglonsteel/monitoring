@@ -58,10 +58,10 @@
                             <tbody class="fs-7">
                                 <?php if($check_progress) : ?>
                                     <?php $no = 1;foreach($check_progress as $check) : ?>
-                                        <tr>
+                                        <tr class="<?php if($check['cleanliness_status'] != 'P') : ?> bg-light <?php endif; ?>">
                                             <?php if($this->session->userdata('role_id') == 2) : ?>
                                                 <th scope="row">
-                                                    <input class="form-check-input select-row" type="checkbox" name="check[]" data-id="<?= $check['cleanliness_progress_id'] ?>" data-check="<?= $check['cleanliness_status'] ?>">
+                                                    <input class="form-check-input select-row" type="checkbox" name="check[]" data-id="<?= $check['cleanliness_progress_id'] ?>" data-check="<?= $check['cleanliness_status'] ?>" <?php if($check['cleanliness_status'] != 'P') : ?>disabled checked style="background-color:#000;border-color:#000"<?php endif; ?>>
                                                 </th>
                                             <?php endif;?>
                                             <td><?= $check['cleanliness_name'] ?></td>
