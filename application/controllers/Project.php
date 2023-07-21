@@ -27,45 +27,19 @@ class Project extends CI_Controller
         
         if ($this->input->is_ajax_request()) {
             $results = $this->project->result_data();
-            // var_dump($results);die;
-            $object  = [];
+            $new_project = [];
             foreach ($results as $result) {
-                if (isset($object[$result->project_id])) {
-                    continue;
-                }
-
-                $project_id = $result->project_id;
-                $teams = array_map(function ($obj) use ($project_id) {
-                    if ($obj->project_id == $project_id) {
-                        $new                = new stdClass();
-                        $new->user_id       = $obj->user_id;
-                        $new->leader        = $obj->is_head;
-                        $new->fullname      = $obj->full_name;
-                        $new->image_profile = $obj->image_profile;
-                        return $new;
-                    }
-                }, $results);
-
-                $new                      = new stdClass();
-                $new->project_id          = $result->project_id;
-                $new->project_name        = $result->project_name;
-                $new->project_description = $result->project_description;
-                $new->project_status      = $result->project_status;
-                $new->start_date          = $result->start_date;
-                $new->deadline            = $result->deadline;
-                $new->completion_percent  = $result->completion_percent;
-                $new->leader              = [...array_filter($teams, fn ($lead) => isset($lead->leader) && $lead->leader == "yes")][0];
-                $new->team                = array_filter($teams, fn ($team) => $team);
-
-                $object[$result->project_id] = $new;
+                $teams          = $this->project->get_member(['project_id'=>$result->project_id]);
+                $result->leader = array_filter($teams, fn ($lead) => $lead->is_head == "yes")[0];
+                $result->team   = $teams;
+                $new_project[]  = $result;
             }
-            // var_dump($object);die;
             $data = [];
-            foreach (array_values($object) as $res) {
+            foreach ($new_project as $res) {
                 $team = '';
                 foreach ($res->team as $v) {
                     $team .= '
-                        <div class="avatar avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="' . $v->fullname . '">
+                        <div class="avatar avatar-rounded" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="' . $v->full_name . '">
                             <img src="' . base_url('public/image/users/' . $v->image_profile) . '" alt="user" class="avatar-img">
                         </div>
                     ';

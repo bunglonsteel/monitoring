@@ -18,16 +18,8 @@ class Project_model extends CI_Model
             p.start_date, 
             p.deadline, 
             p.completion_percent,
-            p.completed_on,
-            pm.user_id as p_user,
-            pm.is_head,
-            u.user_id,
-            e.full_name,
-            e.image_profile')
-            ->from('project as p')
-            ->join('project_member as pm', 'p.project_id = pm.project_id')
-            ->join('users as u', 'pm.user_id = u.user_id')
-            ->join('employee as e', 'u.employee_id = e.employee_id');
+            p.completed_on')
+            ->from('project as p');
     }
 
     private function join_table_task(){
@@ -125,6 +117,19 @@ class Project_model extends CI_Model
     {
         return $this->db->get_where($table, $where);
     }
+    public function get_member($where)
+    {
+        $this->db->select('
+                pm.user_id as user_id,
+                pm.is_head,
+                e.full_name,
+                e.image_profile')
+                ->from('project_member as pm')
+                ->join('users as u', 'pm.user_id = u.user_id')
+                ->join('employee as e', 'u.employee_id = e.employee_id')
+                ->where($where);
+        return $this->db->get()->result();
+    }
     public function get_in($table, $key, $where_in, $where)
     {
         return $this->db->from($table)
@@ -169,40 +174,20 @@ class Project_model extends CI_Model
     {
         $this->join_table_project();
         $this->db->where('p.project_id', $id);
-        $result = $this->db->get()->result();
-
+        $result = $this->db->get()->row();
         if ($result) {
-            $data  = [];
-            foreach ($result as $v) {
-                if (isset($data[$v->project_id])) {
-                    continue;
-                }
-                $project_id = $v->project_id;
-                $team = array_map(function ($obj) use ($project_id) {
-                    if ($obj->project_id == $project_id) {
+                $teams = $this->get_member(['project_id'=>$result->project_id]);
+                $teams = array_map(function ($obj) {
                         $new                = new stdClass();
-                        $new->user          = $obj->user_id;
+                        $new->user_id       = $obj->user_id;
                         $new->leader        = $obj->is_head;
                         $new->fullname      = $obj->full_name;
                         $new->image_profile = $obj->image_profile;
                         return $new;
-                    }
-                }, $result);
-
-                $new                      = new stdClass();
-                $new->project_id          = $v->project_id;
-                $new->project_name        = $v->project_name;
-                $new->project_description = $v->project_description;
-                $new->project_status      = $v->project_status;
-                $new->start_date          = $v->start_date;
-                $new->deadline            = $v->deadline;
-                $new->completion_percent  = $v->completion_percent;
-                $new->completed_on        = $v->completed_on;
-                $new->leader              = array_filter($team, fn ($vi) => $vi->leader == "yes")[0];
-                $new->team                = [...array_filter($team, fn ($vi) => $vi->leader == "no")];
-                $data[$v->project_id]     = $new;
-            }
-            return array_values($data)[0];
+                }, $teams);
+                $result->leader = array_filter($teams, fn ($lead) => $lead->leader == "yes")[0];
+                $result->team   = [...array_filter($teams, fn ($vi) => $vi->leader == "no")];
+            return $result;
         }
         return false;
     }
