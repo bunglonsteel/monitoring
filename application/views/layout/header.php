@@ -222,6 +222,26 @@
         [data-notify="container"]{
             min-width: 300px;
         }
+
+        .divi{
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        .divi .divi-text{
+            position: relative;
+            display: inline-block;
+        }
+
+        .divi-text::before{
+            content: '';
+            right: 100%;
+            position: absolute;
+            top: 50%;
+            width: 100vw;
+            border-top: 1px solid #ededed;
+        }
     </style>
 </head>
 

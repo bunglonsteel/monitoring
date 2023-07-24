@@ -392,9 +392,9 @@
                         $('input[name="title"]').val(response.data.project_name)
                         $('input[name="start_date"]').val(response.data.start_date)
                         $('input[name="deadline"]').val(response.data.deadline)
-                        $('#select_leader').append(new Option(response.data.leader.fullname, response.data.leader.user)).trigger('change');
+                        $('#select_leader').append(new Option(response.data.leader.fullname, response.data.leader.user_id)).trigger('change');
                         response.data.team.forEach(v => {
-                            $('#select_team').append(new Option(v.fullname, v.user, true, true)).trigger('change');
+                            $('#select_team').append(new Option(v.fullname, v.user_id, true, true)).trigger('change');
                         });
                         $('#select_status').val(response.data.project_status).trigger('change');
                         $('#progress-title').html(response.data.completion_percent + "%")
