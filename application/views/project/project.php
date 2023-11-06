@@ -19,7 +19,7 @@
                                                 <i data-feather="plus"></i>
                                             </span>
                                         </span>
-                                        <span class="btn-text">Tugas</span>
+                                        <span class="btn-text">Progress</span>
                                     </span>
                                 </button>
                                 <?php if($this->session->userdata('role_id') == 2) : ?>

@@ -9,21 +9,7 @@
                 <div class="col-md-12 mb-md-4 mb-3">
                     <div class="card card-border mb-0 h-100">
                         <div class="card-header card-header-action">
-                            <h6 id="tambah">List tugas</h6>
-                            <div class="card-action-wrap">
-                            <?php if($this->session->userdata('role_id') == 1) : ?>
-                                <button id="action-task-add" type="button" class="btn btn-sm btn-primary">
-                                    <span>
-                                        <span class="icon">
-                                            <span class="feather-icon">
-                                                <i data-feather="plus"></i>
-                                            </span>
-                                        </span>
-                                        <span class="btn-text">Tugas</span>
-                                    </span>
-                                </button>
-                            <?php endif; ?>
-                            </div>
+                            <h6 id="tambah">Summary project</h6>
                         </div>
 
                         <div class="card-body p-3 pt-4">
@@ -31,11 +17,8 @@
                                 <table id="table-task" class="table nowrap w-100">
                                     <thead>
                                         <tr>
-                                            <th>Nama tugas</th>
-                                            <th>Project</th>
-                                            <th>Mulai</th>
-                                            <th>Berakhir</th>
-                                            <th>Status</th>
+                                            <th>Daily Worker</th>
+                                            <th>Tanggal</th>
                                             <th>Dibuat Oleh</th>
                                             <th>Review</th>
                                             <th data-orderable="false">Action</th>
@@ -61,17 +44,17 @@
 <script src="<?= base_url() ?>public/assets/vendors/daterangepicker/daterangepicker.js"></script>
 <script src="<?= base_url() ?>public/assets/vendors/select2/dist/js/select2.full.min.js"></script>
 <script>
-    $(function () {
-        const table      = $('#table-task')
+    $(function() {
+        const table = $('#table-task')
         const statusTask = [{
-            id: 'doing',
-            text: "Doing",
+            id: 'progress',
+            text: "Progress",
             class: "badge-info"
-        },{
+        }, {
             id: 'partially finished',
             text: "Partially Finished",
             class: "badge-primary"
-        },{
+        }, {
             id: 'completed',
             text: "Completed",
             class: "badge-success"
@@ -123,15 +106,35 @@
             e.preventDefault();
             const id = $(this).closest('tr').find('.edit-task').data('id')
             const data = {
-                id        : id,
-                type      : "task",
-                status    : $(this).val(),
+                id: id,
+                type: "task",
+                status: $(this).val(),
                 csrf_token: csrf.attr('content')
             }
             $.ajax({
                 type: "POST",
                 url: "<?= base_url('project/update_status') ?>",
                 data: data,
+                dataType: "JSON",
+                success: function(response) {
+                    notifAction(response)
+                    setTimeout(() => {
+                        table.DataTable().ajax.reload();
+                    }, 1300);
+                }
+            })
+        });
+
+        $('body').on('click', '.review', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('project/review_task') ?>",
+                data: {
+                    id: $(this).data('id'),
+                    review: $(this).data('value'),
+                    csrf_token: csrf.attr('content')
+                },
                 dataType: "JSON",
                 success: function(response) {
                     notifAction(response)

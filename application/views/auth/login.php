@@ -8,10 +8,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Login</title>
 	<!-- Favicon -->
-	<link rel="shortcut icon" href="<?= base_url() ?>public/image/default/<?= $settings['logo'] ?>">
+	<link rel="shortcut icon" href="<?= base_url() ?>public/image/default/<?= $settings['favicon'] ?>">
 	<link rel="icon" href="<?= base_url() ?>public/image/default/<?= $settings['logo'] ?>" type="image/x-icon">
-	<link href="<?= base_url()?>public/assets/dist/css/style.css" rel="stylesheet" type="text/css">
-	<link href="<?= base_url()?>public/assets/dist/css/villainti.css" rel="stylesheet" type="text/css">
+	<link href="<?= base_url() ?>public/assets/dist/css/style.css" rel="stylesheet" type="text/css">
+	<link href="<?= base_url() ?>public/assets/dist/css/villainti.css" rel="stylesheet" type="text/css">
 	<style>
 		.form-control {
 			font-size: 0.9rem;
@@ -37,22 +37,17 @@
 				<!-- Container -->
 				<div class="container-xxl">
 					<!-- Row -->
-					<div class="row">
+					<div class="row justify-content-center align-items-center" style="height: 100vh;">
 						<div class="col-sm-10 position-relative mx-auto">
 							<div class="auth-content py-8">
-								<form class="w-100" action="<?= base_url()?>login" method="POST">
-								<div class="row">
-									<div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-auto">
-										<div class="text-center mb-7">
-											<a class="navbar-brand me-0" href="index.html">
-												<img class="brand-img d-inline-block rounded" src="<?= base_url()?>public/image/default/<?= $settings['logo'] ?>" alt="brand">
-											</a>
-										</div>
-										<div class="card card-lg card-border shadow-lg">
-											<div class="card-body mt-3 mb-1">
-												<h4 class="mb-2 text-center fw-bolder">The Room 88</h4>
-												<p class="mb-4 text-center fs-7">Silahkan login untuk memulai sesi.</p>
-												<?php
+								<form class="w-100" action="<?= base_url() ?>login" method="POST">
+									<div class="row">
+										<div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-auto">
+											<div class="card card-lg card-border shadow-lg">
+												<div class="card-body mt-3 mb-1">
+													<h4 class="mb-2 text-center fw-bolder"><?= $settings['site_name'] ?></h4>
+													<p class="mb-4 text-center fs-7">Silahkan login untuk memulai sesi.</p>
+													<?php
 													$message = $this->session->flashdata('message');
 													if (isset($message)) {
 														echo  $message;
@@ -70,14 +65,14 @@
 																<input class="form-control" placeholder="Ketikan email atau username" name="email" value="<?= set_value('email'); ?>" type="email">
 																<div id="email-valid" class="input-suffix text-muted">
 																	<span class="feather-icon d-none text-is-valid">
-                                                                        <i class="form-icon" data-feather="check-circle"></i>
-                                                                    </span>
+																		<i class="form-icon" data-feather="check-circle"></i>
+																	</span>
 																	<span class="feather-icon d-none text-is-invalid">
-                                                                        <i class="form-icon" data-feather="x-circle"></i>
-                                                                    </span>
+																		<i class="form-icon" data-feather="x-circle"></i>
+																	</span>
 																</div>
 															</span>
-                                                            <?= form_error('email', '<small class="valid-feedback fs-8 fw-bold" style="display:block;">', '</small>'); ?>
+															<?= form_error('email', '<small class="valid-feedback fs-8 fw-bold" style="display:block;">', '</small>'); ?>
 														</div>
 
 														<div class="form-group col-lg-12">
@@ -89,62 +84,62 @@
 																	<input class="form-control" name="password" placeholder="Ketikan password" type="password">
 																	<a href="#" class="input-suffix text-muted">
 																		<span class="feather-icon">
-                                                                            <i class="form-icon" data-feather="eye"></i>
-                                                                        </span>
+																			<i class="form-icon" data-feather="eye"></i>
+																		</span>
 																		<span class="feather-icon d-none">
-                                                                            <i class="form-icon" data-feather="eye-off"></i>
-                                                                        </span>
+																			<i class="form-icon" data-feather="eye-off"></i>
+																		</span>
 																	</a>
 																</span>
 															</div>
-                                                            
-                                                            <?= form_error('email', '<small class="valid-feedback fs-8 fw-bold" style="display:block;">', '</small>'); ?>
+
+															<?= form_error('email', '<small class="valid-feedback fs-8 fw-bold" style="display:block;">', '</small>'); ?>
 														</div>
 													</div>
-													<input type="hidden" name="<?= $this->security->get_csrf_token_name()?>" value="<?=$this->security->get_csrf_hash()?>" />
+													<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>" />
 													<button type="submit" class="btn btn-primary btn-block">Masuk</a>
 												</div>
 											</div>
 										</div>
-									</form>
-									</div>
-								</div>
+								</form>
 							</div>
 						</div>
-					<!-- /Row -->
+					</div>
 				</div>
-				<!-- /Container -->
+				<!-- /Row -->
 			</div>
-			<!-- /Page Body -->
-
+			<!-- /Container -->
 		</div>
-		<!-- /Main Content -->
+		<!-- /Page Body -->
+
+	</div>
+	<!-- /Main Content -->
 	</div>
 	<!-- /Wrapper -->
 
 	<!-- jQuery -->
-	<script src="<?= base_url()?>public/assets/vendors/jquery/dist/jquery.min.js"></script>
+	<script src="<?= base_url() ?>public/assets/vendors/jquery/dist/jquery.min.js"></script>
 
 	<!-- Bootstrap Core JS -->
-	<script src="<?= base_url()?>public/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="<?= base_url() ?>public/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 	<!-- FeatherIcons JS -->
-	<script src="<?= base_url()?>public/assets/dist/js/feather.min.js"></script>
+	<script src="<?= base_url() ?>public/assets/dist/js/feather.min.js"></script>
 
 	<!-- Fancy Dropdown JS -->
-	<script src="<?= base_url()?>public/assets/dist/js/init.js"></script>
+	<script src="<?= base_url() ?>public/assets/dist/js/init.js"></script>
 
 	<script>
-		$(function () {
+		$(function() {
 			checkValidEmail();
 			loginClicked();
 		})
 
-		const checkValidEmail = function () {
+		const checkValidEmail = function() {
 			const inputEmail = "input[type='email']"
 			const pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/
 			const validate = $('#email-valid span')
-			$(inputEmail).keyup(function () {
+			$(inputEmail).keyup(function() {
 				if ($(this).val().match(pattern)) {
 					$(this).addClass('is-valid')
 					$(this).removeClass('is-invalid')
@@ -159,8 +154,8 @@
 			});
 		}
 
-		const loginClicked = function () {
-			$('#submit').click(function () {
+		const loginClicked = function() {
+			$('#submit').click(function() {
 				$(this).html(
 					`<div class="spinner-border spinner-border-sm" role="status">
 						<span class="sr-only">Loading...</span>

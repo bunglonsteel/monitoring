@@ -30,26 +30,14 @@
                                         <?= $project->deadline ? date('d M Y', strtotime($project->deadline)) : "-" ?>
                                     </span>
                                 </span>
-                                <!-- <?php if($project->project_status == "finished") : ?>
-                                    <span class=" badge badge-soft-success fw-bold">
-                                        <span>
-                                            <span class="icon">
-                                                <span class="feather-icon">
-                                                    <i data-feather="check"></i>
-                                                </span>
-                                            </span>
-                                            Selesai
-                                        </span>
-                                    </span>
-                                <?php endif; ?> -->
                             </div>
                         </div>
-                        
+
                         <hr class="mt-0 mb-3">
                         <p class="mb-1"><span class="info-title">Nama Project</span> : <?= ucwords($project->project_name) ?></p>
-                        <?php if($project->completed_on) : ?>
-                        <div>
-                            <span class="info-title">Tanggal Selesai</span> : 
+                        <?php if ($project->completed_on) : ?>
+                            <div>
+                                <span class="info-title">Tanggal Selesai</span> :
                                 <span class="d-inline-block badge badge-soft-light fw-bold mb-1">
                                     <span>
                                         <span class="icon">
@@ -60,50 +48,79 @@
                                         <?= $project->completed_on ? date('d M Y', strtotime($project->completed_on)) : "-" ?>
                                     </span>
                                 </span>
-                        </div>
+                            </div>
                         <?php endif; ?>
                         <p class="mb-1"><span class="info-title">Status</span> : <strong><?= ucwords($project->project_status) ?></strong></p>
                         <p class="mb-1"><span class="info-title">Progress</span> : <strong><?= $project->completion_percent ?>%</strong></p>
-                        <div class="mb-3"><span class="info-title">Team</span> : 
-                                <span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
-                                    <div class="avatar avatar-rounded avatar-xxs">
-                                        <img src="<?= base_url('public/image/users/'. $project->leader->image_profile) ?>" alt="<?= $project->leader->fullname ?>" class="avatar-img">
-                                        <span class="badge position-bottom-end-overflow-1 fs-7">👑</span>
-                                    </div>
-                                    <?= $project->leader->fullname ?>
-                                </span>
-                                <?php if (count($project->team)) :?>
-                                    <?php foreach($project->team as $t) : ?>
-                                        <span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
-                                            <div class="avatar avatar-rounded avatar-xxs">
-                                                <img src="<?= base_url('public/image/users/'. $t->image_profile) ?>" alt="<?= $t->fullname ?>" class="avatar-img">
-                                            </div>
-                                            <?= $t->fullname ?>
-                                        </span>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                        <div class="mb-3"><span class="info-title">Team</span> :
+                            <span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
+                                <div class="avatar avatar-rounded avatar-xxs">
+                                    <img src="<?= base_url('public/image/users/' . $project->leader->image_profile) ?>" alt="<?= $project->leader->fullname ?>" class="avatar-img">
+                                    <span class="badge position-bottom-end-overflow-1 fs-7">👑</span>
+                                </div>
+                                <?= $project->leader->fullname ?>
+                            </span>
+                            <?php if (count($project->team)) : ?>
+                                <?php foreach ($project->team as $t) : ?>
+                                    <span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
+                                        <div class="avatar avatar-rounded avatar-xxs">
+                                            <img src="<?= base_url('public/image/users/' . $t->image_profile) ?>" alt="<?= $t->fullname ?>" class="avatar-img">
+                                        </div>
+                                        <?= $t->fullname ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                         <div class="accordion accordion-card accordion-card-bold accordion-simple" id="description">
+                            <div class="accordion-item mb-3">
+                                <h6 class="accordion-header">
+                                    <button id="scope-view" class="accordion-button collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#scope-lists" aria-expanded="false">
+                                        Scope of work
+                                    </button>
+                                </h6>
+                                <div id="scope-lists" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#description">
+                                    <div class="accordion-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <button id="action-scope-add" type="button" class="btn btn-sm btn-primary">
+                                                <span>
+                                                    <span class="icon">
+                                                        <span class="feather-icon">
+                                                            <i data-feather="plus"></i>
+                                                        </span>
+                                                    </span>
+                                                    <span class="btn-text">Scope</span>
+                                                </span>
+                                            </button>
+                                            <div id="loading-scopes" class="spinner-border spinner-border-sm me-auto ms-3" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <div id="scopes" class="row g-3">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="accordion-item mb-0">
-                                <h6 class="accordion-header" id="simplecardshadowbold-headingThree">
-                                    <button class="accordion-button collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#desc" aria-expanded="false" aria-controls="simplecardshadowbold-collapseThree">
+                                <h6 class="accordion-header">
+                                    <button class="accordion-button collapsed fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#desc" aria-expanded="false">
                                         Deskripsi / Catatan Project
                                     </button>
                                 </h6>
                                 <div id="desc" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#description">
                                     <div class="accordion-body">
-                                        <?= $project->project_description ?$project->project_description : "-" ?>
+                                        <?= $project->project_description ? $project->project_description : "-" ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
-			
+
                     </div>
                 </div>
                 <div class="col-md-12 mb-md-4 mb-3">
                     <div class="card card-border mb-0 h-100">
                         <div class="card-header card-header-action">
-                            <h6>List Tugas</h6>
+                            <h6>Summary Project</h6>
                             <div class="card-action-wrap">
                                 <button id="action-task-add" type="button" class="btn btn-sm btn-primary">
                                     <span>
@@ -112,7 +129,7 @@
                                                 <i data-feather="plus"></i>
                                             </span>
                                         </span>
-                                        <span class="btn-text">Tugas</span>
+                                        <span class="btn-text">Progress</span>
                                     </span>
                                 </button>
                             </div>
@@ -123,11 +140,8 @@
                                 <table id="table-task" class="table nowrap w-100">
                                     <thead>
                                         <tr>
-                                            <th>Nama tugas</th>
-                                            <th>Project</th>
-                                            <th>Mulai</th>
-                                            <th>Berakhir</th>
-                                            <th>Status</th>
+                                            <th>Daily Worker</th>
+                                            <th>Tanggal</th>
                                             <th>Dibuat Oleh</th>
                                             <th>Review</th>
                                             <th data-orderable="false">Action</th>
@@ -140,7 +154,9 @@
                 </div>
             </div>
         </div>
+        <?php $this->load->view('project/modal_scope_project') ?>
         <?php $this->load->view('project/modal-task') ?>
+        <?php $this->load->view('project/drawer_scope_detail') ?>
         <?php $this->load->view('project/drawer_task_detail') ?>
         <?php $this->load->view('layout/footer-copyright') ?>
     </div>
@@ -154,18 +170,18 @@
 <script src="<?= base_url() ?>public/assets/vendors/select2/dist/js/select2.full.min.js"></script>
 
 <script>
-    $(function () {
-        const table  = $('#table-task')
+    $(function() {
+        const table = $('#table-task')
         const paramid = $(location).attr('href').split('/')
         const statusTask = [{
             id: 'doing',
             text: "Doing",
             class: "badge-info"
-        },{
+        }, {
             id: 'partially finished',
             text: "Partially Finished",
             class: "badge-primary"
-        },{
+        }, {
             id: 'completed',
             text: "Completed",
             class: "badge-success"
@@ -174,8 +190,7 @@
             .empty()
             .css('margin', 0)
             .append(`
-                <input class="form-control" type="text" name="project" value="<?= $project->project_id ?>" hidden>`
-            )
+                <input class="form-control" type="text" name="project" value="<?= $project->project_id ?>" hidden>`)
         table.DataTable({
             processing: true,
             scrollX: true,
@@ -206,7 +221,7 @@
             serverSide: true,
             deferRender: true,
             ajax: {
-                url: '<?= base_url() ?>project/task/'+ paramid.at(-1),
+                url: '<?= base_url() ?>project/task/' + paramid.at(-1),
                 type: 'POST',
                 data: function(e) {
                     e.csrf_token = csrf.attr('content');
@@ -222,9 +237,9 @@
             e.preventDefault();
             const id = $(this).closest('tr').find('.edit-task').data('id')
             const data = {
-                id        : id,
-                type      : "task",
-                status    : $(this).val(),
+                id: id,
+                type: "task",
+                status: $(this).val(),
                 csrf_token: csrf.attr('content')
             }
             $.ajax({
@@ -247,8 +262,8 @@
                 type: "POST",
                 url: "<?= base_url('project/review_task') ?>",
                 data: {
-                    id        : $(this).data('id'),
-                    review    : $(this).data('value'),
+                    id: $(this).data('id'),
+                    review: $(this).data('value'),
                     csrf_token: csrf.attr('content')
                 },
                 dataType: "JSON",

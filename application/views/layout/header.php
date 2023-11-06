@@ -190,7 +190,8 @@
             padding: 10px 10px 10px 20px;
         }
 
-        .note-editor.note-frame .note-editing-area .note-editable, .note-editor.note-airframe .note-editing-area .note-editable{
+        .note-editor.note-frame .note-editing-area .note-editable,
+        .note-editor.note-airframe .note-editing-area .note-editable {
             background-color: #fff;
         }
 
@@ -198,7 +199,7 @@
             height: 20px;
         }
 
-        .select2-container{
+        .select2-container {
             min-width: 120px;
         }
 
@@ -219,28 +220,57 @@
             width: 120px;
         }
 
-        [data-notify="container"]{
+        [data-notify="container"] {
             min-width: 300px;
         }
 
-        .divi{
+        .divi {
             overflow: hidden;
             white-space: nowrap;
             text-align: right;
         }
 
-        .divi .divi-text{
+        .divi .divi-text {
             position: relative;
             display: inline-block;
         }
 
-        .divi-text::before{
+        .divi-text::before {
             content: '';
             right: 100%;
             position: absolute;
             top: 50%;
             width: 100vw;
             border-top: 1px solid #ededed;
+        }
+
+        .item-description:not(:first-child) {
+            padding-top: .4rem !important;
+        }
+
+        .item-description:not(:last-child) {
+            padding-bottom: 1rem !important;
+            border-bottom: 1px solid #dee2de;
+        }
+
+        .timeline {
+            padding-left: 1.3rem;
+            border-left: 1px solid #ededed;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item::before {
+            position: absolute;
+            left: -2rem;
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-color: #c7c7c7;
+            border: 4px solid #f7f7f7;
+            border-radius: 50%;
         }
     </style>
 </head>

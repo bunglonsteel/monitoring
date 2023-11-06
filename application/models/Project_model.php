@@ -5,7 +5,7 @@ class Project_model extends CI_Model
 {
 
     private $order            = ['project_id', 'project_member_id', 'deadline', 'completion_percent', 'project_status'];
-    private $order_task       = ['task_id', 'start_date', 'due_date', 'status', 'added_by', "verify_completed"];
+    private $order_task       = ['task_id', 'p.project_id', 'start_date', 'added_by', "verify_completed"];
     private $order_categories = ['task_category_id', 'category_name'];
 
     private function join_table_project()

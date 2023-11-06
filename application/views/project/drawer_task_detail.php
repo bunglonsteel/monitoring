@@ -3,7 +3,7 @@
 </div>
 
 <script>
-    $(function () {
+    $(function() {
 
         const showDetail = response => {
             const target = $('#drawer_push')
@@ -13,7 +13,20 @@
             });
 
             const review = response.verify_completed == "yes" ? "👍" : response.verify_completed == "no" ? "💪" : '<span class="badge badge-soft-warning">Menunggu...</span>';
-
+            let items = '';
+            response.items.forEach(e => {
+                items += `
+                    <div class="card card-border ${e.status == "progress" ? 'border-info' : 'border-success'}">
+                        <div class="card-body p-3">
+                            <div class="mb-1">
+                            ${e.status == "progress" ? '<span class="badge badge-soft-info">Doing</span>' : '<span class="badge badge-soft-success">Completed</span>'}
+                            </div>
+                            <p class="fw-bold text-dark mb-2">${e.title}</p>
+                            <span class="fs-8">Scope : ${e.scope}</span>
+                        </div>
+                    </div>
+                `
+            })
             const content = `<div class="drawer-header">
                     <div class="d-flex">
                         <div class="drawer-text">
@@ -44,21 +57,9 @@
                                 </div>
                                 <div class="my-2"> 
                                     <span class="fs-8 text-primary fw-bold">
-                                        Tanggal Mulai
+                                        Tanggal
                                     </span>
                                     <p class="fs-7">${response.start_date}</p>
-                                </div>
-                                <div class="my-2"> 
-                                    <span class="fs-8 text-primary fw-bold">
-                                        Tanggal Berakhir
-                                    </span>
-                                    <p class="fs-7">${response.due_date}</p>
-                                </div>
-                                <div class="my-2">
-                                    <span class="fs-8 text-primary fw-bold">
-                                        Status Tugas
-                                    </span>
-                                    <p class="fs-7 text-capitalize">${response.status}</p>
                                 </div>
                                 <div class="my-2"> 
                                     <span class="fs-8 text-primary fw-bold">
@@ -74,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="my-2"> 
-                                    <span class="fs-8 text-primary fw-bold">
+                                    <span class="d-inline-block fs-8 text-primary fw-bold mb-1">
                                         Review
                                     </span>
                                     <div>
@@ -82,10 +83,12 @@
                                     </div>
                                 </div>
                                 <div class="my-2"> 
-                                    <span class="fs-8 text-primary fw-bold">
+                                    <span class="d-inline-block fs-8 text-primary fw-bold mb-2">
                                         Deskripsi tugas
                                     </span>
-                                    <p class="fs-7">${response.task_description}</p>
+                                    <div class="fs-7">
+                                        ${items}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,28 +98,28 @@
             target.html(content).show()
         }
 
-        $('body').on('click', '.show-detail', function(e){
+        $('body').on('click', '.show-detail', function(e) {
             $.ajax({
                 type: "POST",
-                url : "<?= base_url('project/get_task') ?>",
+                url: "<?= base_url('project/get_task') ?>",
                 data: {
-                    id : $(this).data('id'),
-                    csrf_token : csrf.attr('content')
+                    id: $(this).data('id'),
+                    csrf_token: csrf.attr('content')
                 },
                 dataType: "JSON",
-                beforeSend : _ => {
+                beforeSend: _ => {
                     $('#loading').show()
                 },
-                success: function(response){
+                success: function(response) {
                     csrf.attr('content', response.csrf_hash)
                     showDetail(response.data)
                 },
-                error : function(xhr, status, errorThrown){
+                error: function(xhr, status, errorThrown) {
                     console.log(xhr.responseText)
                     console.log(status)
                     console.log(errorThrown)
                 }
-            }).done( _ => {
+            }).done(_ => {
                 $('#loading').hide()
             });
         });

@@ -24,12 +24,12 @@ class Project extends CI_Controller
         $data['settings'] = $this->Settings_model->get_settings();
         $data['employee'] = $this->Employee_model->get_employee_by_id($this->session->userdata('employee_id'));
         $user = $this->project->get('users', ['email' => $this->session->userdata('email')])->row();
-        
+
         if ($this->input->is_ajax_request()) {
             $results = $this->project->result_data();
             $new_project = [];
             foreach ($results as $result) {
-                $teams          = $this->project->get_member(['project_id'=>$result->project_id]);
+                $teams          = $this->project->get_member(['project_id' => $result->project_id]);
                 $result->leader = array_filter($teams, fn ($lead) => $lead->is_head == "yes")[0];
                 $result->team   = $teams;
                 $new_project[]  = $result;
@@ -62,26 +62,26 @@ class Project extends CI_Controller
                             </div>
                         ';
 
-                if ($this->session->userdata('role_id') == 2 || $user->user_id == $res->leader->user_id){
-                $row[] = '
+                if ($this->session->userdata('role_id') == 2 || $user->user_id == $res->leader->user_id) {
+                    $row[] = '
                             <select class="select_status">
                                 <option value="' . $res->project_status . '" selected>' . ucwords($res->project_status) . '</option>
                             </select>
                         ';
 
-                $action = '<button class="btn btn-icon btn-sm btn-soft-dark flush-soft-hover action-edit" type="button" data-id="' . $res->project_id . '">
+                    $action = '<button class="btn btn-icon btn-sm btn-soft-dark flush-soft-hover action-edit" type="button" data-id="' . $res->project_id . '">
                                 <span class="icon fs-8">
                                     <i class="icon dripicons-pencil"></i>
                                 </span>
                             </button>
                             ';
                 } else {
-                $row[]  = ucwords($res->project_status);
-                $action = '';
+                    $row[]  = ucwords($res->project_status);
+                    $action = '';
                 }
 
                 if ($this->session->userdata('role_id') == 2) {
-                    $action.= '<button class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover action-remove" type="button" data-id="' . $res->project_id . '">
+                    $action .= '<button class="btn btn-icon btn-sm btn-soft-danger flush-soft-hover action-remove" type="button" data-id="' . $res->project_id . '">
                             <span class="icon fs-8">
                                 <i class="icon dripicons-trash"></i>
                             </span>
@@ -89,13 +89,13 @@ class Project extends CI_Controller
                 }
 
                 $row[] = '<div class="d-flex gap-2">
-                                <a href="' . base_url('project/view/'. $res->project_id ). '" class="btn btn-sm btn-soft-dark flush-soft-hover action-show" type="button">
+                                <a href="' . base_url('project/view/' . $res->project_id) . '" class="btn btn-sm btn-soft-dark flush-soft-hover action-show" type="button">
                                     <span class="icon fs-8">
                                         <i class="icon dripicons-preview"></i>
                                         <span>Lihat</span>
                                     </span>
                                 </a>
-                                '.$action.'
+                                ' . $action . '
                             </div>';
                 $data[] = $row;
             }
@@ -124,12 +124,12 @@ class Project extends CI_Controller
                 $status = $res->status == "completed" ? "badge-soft-success" : ($res->status >= "in progress" ? "badge-soft-info" : "badge-soft-secondary");
                 if ($res->verify_completed == "yes") {
                     $achievement = '👍';
-                } else if($res->verify_completed == "no"){
+                } else if ($res->verify_completed == "no") {
                     $achievement = '💪';
                 }
 
-                if ($this->session->userdata('role_id') == 2){
-                    if($res->verify_completed == NULL && $res->status != "todo"){
+                if ($this->session->userdata('role_id') == 2) {
+                    if ($res->verify_completed == NULL && $res->status != "todo") {
                         $achievement = '<div class="d-flex gap-2">
                             <button class="btn review btn-icon btn-soft-success border-success btn-xs" data-id="' . $res->task_id . '" data-value="yes">
                                 <span class="icon fs-8">
@@ -142,13 +142,13 @@ class Project extends CI_Controller
                                 </span>
                             </button>
                         </div>';
-                    } else if($res->verify_completed == NULL){
+                    } else if ($res->verify_completed == NULL) {
                         $achievement = "-";
                     }
                 } else {
-                    if($res->verify_completed == NULL && $res->status != "todo"){
+                    if ($res->verify_completed == NULL && $res->status != "todo") {
                         $achievement = '<span class="badge badge-soft-warning">Menunggu...</span>';
-                    } else if($res->verify_completed == NULL){
+                    } else if ($res->verify_completed == NULL) {
                         $achievement = "-";
                     }
                 }
@@ -156,28 +156,24 @@ class Project extends CI_Controller
                 $row = [];
                 $row[] = '
                     <div>
-                        <p class="fw-bold">'.ucwords($res->task_title).'</p>
-                        <p class="fs-8 text-wrap text-limit-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="'.$res->task_description.'">
-                            '.$res->task_description.'
-                        </p>
+                        <p class="fs-8"><b>Project</b> : ' . $res->project_name . '</p>
+                        <p class="fw-bold text-wrap text-limit-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="' . $res->task_title . '">' . ucwords($res->task_title) . '</p>
                     </div>
                     ';
-                $row[] = $res->project_name;
                 $row[] = date('d M Y', strtotime($res->start_date));
-                $row[] = date('d M Y', strtotime($res->due_date));
-                $row[] = $res->status != "completed" ? 
-                        '<select class="status_task" style="min-width:120px;">
-                            <option value="' . $res->status . '" selected>' . ucwords($res->status) . '</option>
-                        </select>' : 
-                        '<span class="badge '.$status.'">'
-                            . ucwords($res->status) .
-                        '</span>';
-                $row[] = $res->full_name ? 
-                        '<span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
+                // $row[] = $res->status != "completed" ? 
+                //         '<select class="status_task" style="min-width:120px;">
+                //             <option value="' . $res->status . '" selected>' . ucwords($res->status) . '</option>
+                //         </select>' : 
+                //         '<span class="badge '.$status.'">'
+                //             . ucwords($res->status) .
+                //         '</span>';
+                $row[] = $res->full_name ?
+                    '<span class="bg-light d-inline-block rounded-pill p-1 pe-3 mr-1 mb-1 fs-8">
                             <div class="avatar avatar-rounded avatar-xxs">
-                                <img src="'. base_url("public/image/users/". $res->image_profile).'" alt="<?= $t->fullname ?>" class="avatar-img">
+                                <img src="' . base_url("public/image/users/" . $res->image_profile) . '" alt="<?= $t->fullname ?>" class="avatar-img">
                             </div>
-                                '.$res->full_name.'
+                                ' . $res->full_name . '
                         </span>' : "-";
                 $row[] = $achievement;
                 $row[] = '<div class="d-flex gap-2">
@@ -211,7 +207,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function tasks(){
+    public function tasks()
+    {
         check_user_acces();
         if ($this->session->userdata('role_id') == 2) {
             $this->load->model('Cuti_model');
@@ -227,7 +224,8 @@ class Project extends CI_Controller
         render_template('project/tasks', $data);
     }
 
-    public function task_categories(){
+    public function task_categories()
+    {
         check_user_acces();
         if ($this->session->userdata('role_id') == 2) {
             $this->load->model('Cuti_model');
@@ -243,7 +241,8 @@ class Project extends CI_Controller
         render_template('project/task_categories', $data);
     }
 
-    public function categories(){
+    public function categories()
+    {
         check_user_acces();
         if ($this->input->is_ajax_request()) {
             $results = $this->project->result_data("category");
@@ -253,7 +252,7 @@ class Project extends CI_Controller
 
                 $row = [];
                 $row[] = $key + 1;
-                $row[] = $res->parent_id ?  $res->category : $res->category. ' <span class="badge badge-sm badge-primary">Induk</span>';
+                $row[] = $res->parent_id ?  $res->category : $res->category . ' <span class="badge badge-sm badge-primary">Induk</span>';
                 $row[] = '<div class="d-flex gap-2">
                             <button class="btn btn-sm btn-soft-dark flush-soft-hover action-edit" type="button" data-id="' . $res->category_id . '">
                                 <span class="icon fs-8">
@@ -281,7 +280,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function view($id){
+    public function view($id)
+    {
         if ($this->session->userdata('role_id') == 2) {
             $this->load->model('Cuti_model');
             $data['count_pending'] = $this->Cuti_model->get_count_cuti_pending();
@@ -396,9 +396,9 @@ class Project extends CI_Controller
             ['required'   => '%s tidak boleh kosong.']
         );
         $this->form_validation->set_rules(
-            'status_task',
-            'Status Tugas',
-            'trim|required|in_list[doing,partially finished,completed]',
+            'item[]',
+            'Deskripsi Item',
+            'trim|required',
             ['required'   => '%s tidak boleh kosong.']
         );
         $this->form_validation->set_rules(
@@ -412,11 +412,11 @@ class Project extends CI_Controller
             'Tanggal Mulai',
             'trim'
         );
-        $this->form_validation->set_rules(
-            'due_date',
-            'Tanggal Berakhir',
-            'trim'
-        );
+        // $this->form_validation->set_rules(
+        //     'due_date',
+        //     'Tanggal Berakhir',
+        //     'trim'
+        // );
         $this->form_validation->set_rules(
             'description',
             'Deskripsi / Catatan tugas',
@@ -517,10 +517,10 @@ class Project extends CI_Controller
             $team_old = $this->project->get_not_in('project_member', 'user_id', $request['team'], ['project_id' => $project->project_id, 'is_head' => "no"])->result();
 
             if ($team_old) {
-                $team_old = array_map(fn($v) => $v->user_id, $team_old);
+                $team_old = array_map(fn ($v) => $v->user_id, $team_old);
                 $this->db->where('project_id', $project->project_id)
-                ->where_in('user_id', $team_old)
-                ->delete('project_member');
+                    ->where_in('user_id', $team_old)
+                    ->delete('project_member');
             }
             $teams  = $this->project->get('project_member', ['project_id' => $project->project_id])->result();
             $leader = array_filter($teams, fn ($v) => $v->is_head == "yes")[0];
@@ -575,14 +575,15 @@ class Project extends CI_Controller
         } else {
             $this->_rules_task();
             $request = [
-                'target'      => $this->input->post('target', TRUE),
-                'title_task'  => $this->input->post('title_task', TRUE),
-                'project'     => $this->input->post('project', TRUE),
-                'categories'  => $this->input->post('categories', TRUE),
-                'status_task' => $this->input->post('status_task', TRUE),
+                'target'     => $this->input->post('target', TRUE),
+                'title_task' => $this->input->post('title_task', TRUE),
+                'project'    => $this->input->post('project', TRUE),
+                'categories' => $this->input->post('categories', TRUE),
+                'items'      => $this->input->post('item[]', TRUE),
+                // 'status_task' => $this->input->post('status_task', TRUE),
                 'start_date'  => $this->input->post('start_date', TRUE),
-                'due_date'    => $this->input->post('due_date', TRUE),
-                'desc_task'   => $this->input->post('desc_task', TRUE),
+                // 'due_date'    => $this->input->post('due_date', TRUE),
+                // 'desc_task'   => $this->input->post('desc_task', TRUE),
             ];
 
             if ($action == "add") {
@@ -595,7 +596,8 @@ class Project extends CI_Controller
         }
     }
 
-    private function _add_task($request) {
+    private function _add_task($request)
+    {
         if ($this->form_validation->run() == false) {
             $output = [
                 'errors'  => 'true',
@@ -619,23 +621,23 @@ class Project extends CI_Controller
                 $data_task = [
                     'task_title'       => $request['title_task'],
                     'project_id'       => $request['project'],
-                    'task_description' => $request['desc_task'],
+                    // 'task_description' => $request['desc_task'],
                     'start_date'       => date('y-m-d'),
                     'due_date'         => date('y-m-d'),
-                    'status'           => $request['status_task'],
+                    'status'           => 1,
                     'added_by'         => $user->user_id,
                 ];
-    
+
                 if ($request['start_date']) {
                     $data_task['start_date'] = $request['start_date'];
                 }
-    
-                if ($request['due_date']) {
-                    $data_task['due_date'] = $request['due_date'];
-                }
-    
+
+                // if ($request['due_date']) {
+                //     $data_task['due_date'] = $request['due_date'];
+                // }
+
                 $last_task = $this->project->insert('tasks', $data_task, true);
-    
+
                 $groups = [];
                 if ($request['categories']) {
                     foreach ($request['categories'] as $group) {
@@ -645,7 +647,18 @@ class Project extends CI_Controller
                         ];
                     }
                 }
+                $items = [];
+                foreach ($request['items'] as $value) {
+                    $status = ['progress', 'completed'];
+                    $items[] = [
+                        'task_id'  => $last_task,
+                        'scope_id' => $value['scopes'],
+                        'title'    => $value['title'],
+                        'status'   => in_array($value['status'], $status) ? $value['status'] : $status[0],
+                    ];
+                }
                 $this->project->insert_batch('task_group', $groups);
+                $this->project->insert_batch('task_sub', $items);
                 $output = [
                     'success'   => true,
                     'message'   => 'Tugas berhasil ditambahkan, terimakasih.',
@@ -657,7 +670,8 @@ class Project extends CI_Controller
         return $output;
     }
 
-    private function _update_task($request) {
+    private function _update_task($request)
+    {
         if ($this->form_validation->run() == false) {
             $output = [
                 'errors'    => 'true',
@@ -685,28 +699,27 @@ class Project extends CI_Controller
                         'message'   => 'Anda tidak bisa mengubah tugas di project ini, silahkan kordinasi bersama leader team untuk menambahkan anda terlebih dahulu.',
                         'csrf_hash' => $this->security->get_csrf_hash(),
                     ];
-                } else { 
+                } else {
                     $data_task = [
                         'task_title'       => $request['title_task'],
-                        'task_description' => $request['desc_task'],
+                        // 'task_description' => $request['desc_task'],
                         'start_date'       => $request['start_date'],
-                        'due_date'         => $request['due_date'],
-                        'status'           => $request['status_task'],
+                        // 'due_date'         => $request['due_date'],
+                        // 'status'           => $request['status_task'],
                         'last_update_by'   => $user->user_id,
                     ];
-    
+
                     $this->project->update('tasks', $data_task, ['task_id' => $task->task_id]);
                     $category_old = $this->project->get_not_in('task_group', 'task_category_id', $request['categories'], ['task_id' => $task->task_id])->result();
                     if ($category_old) {
-                        $category_old = array_map(fn($v) => $v->task_group_id, $category_old);
-    
+                        $category_old = array_map(fn ($v) => $v->task_group_id, $category_old);
+
                         $this->db->where('task_id', $task->task_id)
-                        ->where_in('task_group_id', $category_old)
-                        ->delete('task_group');
+                            ->where_in('task_group_id', $category_old)
+                            ->delete('task_group');
                     }
-    
+
                     $categories = $this->project->get('task_group', ['task_id' => $task->task_id])->result();
-                    // var_dump($categories);die;
                     $groups     = [];
                     if ($request['categories']) {
                         foreach ($request['categories'] as $c) {
@@ -719,10 +732,19 @@ class Project extends CI_Controller
                             }
                         }
                     }
-    
+                    $item_editable = [];
+                    foreach ($request['items'] as $item) {
+                        $item_editable[] = [
+                            'task_sub_id' => $item['id'],
+                            'title'       => $item['title'],
+                            'scope_id'    => $item['scopes'],
+                            'status'      => $item['status']
+                        ];
+                    }
                     if ($groups) {
                         $this->project->insert_batch('task_group', $groups);
                     }
+                    $this->db->update_batch('task_sub', $item_editable, 'task_sub_id');
                     $output = [
                         'success'   => true,
                         'message'   => 'Tugas berhasil diperbarui, terimakasih.',
@@ -757,7 +779,8 @@ class Project extends CI_Controller
         }
     }
 
-    private function _add_task_categories($request) {
+    private function _add_task_categories($request)
+    {
         if ($this->form_validation->run() == false) {
             $output = [
                 'errors'  => 'true',
@@ -786,7 +809,8 @@ class Project extends CI_Controller
         return $output;
     }
 
-    private function _update_task_categories($request) {
+    private function _update_task_categories($request)
+    {
         if ($this->form_validation->run() == false) {
             $output = [
                 'errors'    => 'true',
@@ -815,6 +839,112 @@ class Project extends CI_Controller
                 $output = [
                     'success'   => true,
                     'message'   => 'Kategori berhasil diperbarui, terimakasih.',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            }
+        }
+
+        return $output;
+    }
+
+    public function action_scope_project($action)
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        } else {
+            $this->form_validation->set_rules(
+                'scope',
+                'Scope Project',
+                'trim|required',
+                ['required' => '%s tidak boleh kosong.']
+            );
+            $this->form_validation->set_rules(
+                'project',
+                'Project',
+                'trim|required',
+                ['required' => '%s tidak boleh kosong.']
+            );
+            $request = [
+                'target'     => $this->input->post('target', TRUE),
+                'scope'      => $this->input->post('scope', TRUE),
+                'project_id' => $this->input->post('project', TRUE),
+            ];
+
+            if ($action == "add") {
+                $output = $this->_add_scope($request);
+            } else {
+                $this->form_validation->set_rules(
+                    'target',
+                    'Target',
+                    'trim|required',
+                    ['required' => '%s tidak boleh kosong.']
+                );
+                $output = $this->_update_scope($request);
+            }
+
+            echo json_encode($output);
+        }
+    }
+
+    private function _add_scope($request)
+    {
+        if ($this->form_validation->run() == false) {
+            $output = [
+                'errors'  => 'true',
+                'message' => validation_errors(
+                    '<div class="alert alert-danger alert-dismissible fs-8 py-2_5" role="alert">',
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>'
+                ),
+                'csrf_hash' => $this->security->get_csrf_hash(),
+            ];
+        } else {
+            $scopes = array_map(fn ($v) => trim($v), explode('|', $request['scope']));
+            $scopes = array_filter($scopes, fn ($v) => $v);
+            $data   = [];
+            foreach ($scopes as $value) {
+                $data[] = [
+                    "scope"     => $value,
+                    "project_id" => $request['project_id'],
+                ];
+            }
+            $this->project->insert_batch('project_scope', $data);
+            $output = [
+                'success'   => true,
+                'message'   => 'Scope project berhasil ditambahkan, terimakasih.',
+                'csrf_hash' => $this->security->get_csrf_hash(),
+            ];
+        }
+
+        return $output;
+    }
+
+    private function _update_scope($request)
+    {
+        if ($this->form_validation->run() == false) {
+            $output = [
+                'errors'    => 'true',
+                'message'   => validation_errors(
+                    '<div class="alert alert-danger alert-dismissible fs-8 py-2_5" role="alert">',
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>'
+                ),
+                'csrf_hash' => $this->security->get_csrf_hash(),
+            ];
+        } else {
+            $scope  = $this->project->get('project_scope', ['scope_id' => $request['target']])->row();
+            if (!$scope) {
+                $output = [
+                    'error'     => 'true',
+                    'message'   => 'Data tidak ditemukan',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+
+                $this->project->update('project_scope', ['scope' => $request['scope']], ['scope_id' => $scope->scope_id]);
+                $output = [
+                    'success'   => true,
+                    'message'   => 'Scope Project berhasil diperbarui, terimakasih.',
                     'csrf_hash' => $this->security->get_csrf_hash(),
                 ];
             }
@@ -856,7 +986,7 @@ class Project extends CI_Controller
                         ];
                     }
                 }
-            } else if($type == "task"){
+            } else if ($type == "task") {
                 $task = $this->project->get('tasks', ['task_id' => $id])->row();
                 if (!$task) {
                     $output = [
@@ -886,6 +1016,30 @@ class Project extends CI_Controller
                         $output = [
                             'error'     => 'true',
                             'message'   => 'Anda tidak bisa menghapus tugas yang telah dibuat orang lain.',
+                            'csrf_hash' => $this->security->get_csrf_hash(),
+                        ];
+                    }
+                }
+            } else if ($type == "scope") {
+                $scope = $this->project->get('project_scope', ['scope_id' => $id])->row();
+                if (!$scope) {
+                    $output = [
+                        'error'     => 'true',
+                        'message'   => 'Data tidak ditemukan',
+                        'csrf_hash' => $this->security->get_csrf_hash(),
+                    ];
+                } else {
+                    $result = $this->project->delete('project_scope', ['scope_id' => $id]);
+                    if (!$result) {
+                        $output = [
+                            'error'     => 'true',
+                            'message'   => 'Ada kesalahan pada saat menghapus.',
+                            'csrf_hash' => $this->security->get_csrf_hash(),
+                        ];
+                    } else {
+                        $output = [
+                            'success'   => 'true',
+                            'message'   => "Scope berhasil dihapus.",
                             'csrf_hash' => $this->security->get_csrf_hash(),
                         ];
                     }
@@ -951,10 +1105,15 @@ class Project extends CI_Controller
             $id               = $this->input->post('id', TRUE);
             $task             = $this->project->get_task($id);
             $task->categories = $this->db->select('tc.task_category_id as id, tc.category_name as name')
-                                            ->from('task_group as tg')
-                                            ->join('task_category as tc', 'tg.task_category_id = tc.task_category_id')
-                                            ->where('tg.task_id', $task->task_id)
-                                            ->get()->result();
+                ->from('task_group as tg')
+                ->join('task_category as tc', 'tg.task_category_id = tc.task_category_id')
+                ->where('tg.task_id', $task->task_id)
+                ->get()->result();
+            $task->items = $this->db->select('ts.task_sub_id as id, ts.title, ts.status, ps.scope_id, ps.scope, ts.created_at, ts.updated_at')
+                ->from('task_sub as ts')
+                ->join('project_scope as ps', 'ts.scope_id = ps.scope_id')
+                ->where('ts.task_id', $task->task_id)
+                ->get()->result();
             if (!$task) {
                 $output = [
                     'error'     => 'true',
@@ -965,6 +1124,83 @@ class Project extends CI_Controller
                 $output = [
                     'success'   => 'true',
                     'data'      => $task,
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            }
+            echo json_encode($output);
+        }
+    }
+
+    public function get_task_sub()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        } else {
+            $id   = $this->input->post('id', TRUE);
+            $task = $this->project->get('task_sub', ['scope_id' => $id])->result();
+            if (!$task) {
+                $output = [
+                    'error'     => 'true',
+                    'message'   => 'Data tidak ditemukan atau belum ada.',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+                $output = [
+                    'success'   => 'true',
+                    'data'      => $task,
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            }
+            echo json_encode($output);
+        }
+    }
+
+    public function get_scopes()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        } else {
+            $id                  = $this->input->post('id', true);
+            $status              = $this->input->post('status', true);
+            $where['project_id'] = $id;
+            if ($status == 'yes') {
+                $where['status'] = 0;
+            }
+            $project_scope = $this->project->get('project_scope', $where)->result();
+            if (!$project_scope) {
+                $output = [
+                    'error'    => 'true',
+                    'message'   => 'Data tidak ditemukan',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+                $output = [
+                    'success'   => 'true',
+                    'data'      => $project_scope,
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            }
+            echo json_encode($output);
+        }
+    }
+
+    public function get_scope()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        } else {
+            $id    = $this->input->post('id', true);
+            $scope = $this->project->get('project_scope', ['scope_id' => $id])->row();
+            if (!$scope) {
+                $output = [
+                    'error'    => 'true',
+                    'message'   => 'Data tidak ditemukan',
+                    'csrf_hash' => $this->security->get_csrf_hash(),
+                ];
+            } else {
+                $output = [
+                    'success'   => 'true',
+                    'data'      => $scope,
                     'csrf_hash' => $this->security->get_csrf_hash(),
                 ];
             }
@@ -1053,7 +1289,7 @@ class Project extends CI_Controller
         if (!$this->input->is_ajax_request()) {
             show_404();
         } else {
-            
+
             $employee = $this->Employee_model->select_user();
 
             if (!$employee) {
@@ -1106,17 +1342,17 @@ class Project extends CI_Controller
                         ];
                     }
                 }
-            } else {
-                $task = $this->project->get('tasks', ['task_id' => $id])->row();
-                if (!$task) {
+            } else if ($type == "scope") {
+                $scope = $this->project->get('project_scope', ['scope_id' => $id])->row();
+                if (!$scope) {
                     $output = [
-                        'error'    => 'true',
+                        'error'     => 'true',
                         'message'   => 'Data tidak ditemukan',
                         'csrf_hash' => $this->security->get_csrf_hash(),
                     ];
                 } else {
                     $user = $this->project->get('users', ['email' => $this->session->userdata('email')])->row();
-                    $team = $this->project->get('project_member', ['project_id' => $task->project_id, 'user_id' => $user->user_id])->row();
+                    $team = $this->project->get('project_member', ['project_id' => $scope->project_id, 'user_id' => $user->user_id])->row();
                     if (!$team) {
                         $output = [
                             'error'     => 'true',
@@ -1124,7 +1360,7 @@ class Project extends CI_Controller
                             'csrf_hash' => $this->security->get_csrf_hash(),
                         ];
                     } else {
-                        $result = $this->project->update('tasks', ['status' => $status], ['task_id' => $task->task_id]);
+                        $result = $this->project->update('project_scope', ['status' => $status], ['scope_id' => $scope->scope_id]);
                         if (!$result) {
                             $output = [
                                 'error'     => 'true',
@@ -1145,7 +1381,8 @@ class Project extends CI_Controller
         }
     }
 
-    public function review_task(){
+    public function review_task()
+    {
         if (!$this->input->is_ajax_request()) {
             show_404();
         } else {
